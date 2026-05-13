@@ -90,9 +90,14 @@ export const createAdminFn = createServerFn({ method: "POST" })
       data,
     }): Promise<{ ok: boolean; admin?: Admin; error?: string }> => {
       const auth = await checkAdmin(data);
-      if (!auth.ok || !auth.isAdmin) return { ok: false, error: "forbidden" };
+      if (!auth.ok || !auth.isAdmin) {
+        return {
+          ok: false,
+          error: `Не авторизован (via=${auth.via}). Войдите заново.`,
+        };
+      }
       if (auth.admin && auth.admin.role !== "super") {
-        return { ok: false, error: "only super admin" };
+        return { ok: false, error: "Только супер-админ может создавать сотрудников" };
       }
       if (!data.login.trim() || data.password.length < 4) {
         return { ok: false, error: "login обязателен, пароль ≥ 4 символов" };
