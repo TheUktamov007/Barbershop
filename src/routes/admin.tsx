@@ -388,7 +388,6 @@ function AdminShell({ currentAdmin }: { currentAdmin: Admin | null }) {
             {isSuper && <TabsTrigger value="reviews" className="shrink-0">Отзывы</TabsTrigger>}
             {isSuper && <TabsTrigger value="earnings" className="shrink-0">Доходы</TabsTrigger>}
             {isSuper && <TabsTrigger value="certs" className="shrink-0">Ваучеры</TabsTrigger>}
-            {isSuper && <TabsTrigger value="packages" className="shrink-0">Абонементы</TabsTrigger>}
             {isSuper && <TabsTrigger value="branches" className="shrink-0">Филиалы</TabsTrigger>}
             {isSuper && <TabsTrigger value="services" className="shrink-0">Услуги</TabsTrigger>}
             {isSuper && <TabsTrigger value="masters" className="shrink-0">Мастера</TabsTrigger>}
@@ -408,9 +407,7 @@ function AdminShell({ currentAdmin }: { currentAdmin: Admin | null }) {
           <TabsContent value="certs" className="mt-5">
             <CertsTab />
           </TabsContent>
-          <TabsContent value="packages" className="mt-5">
-            <PackagesTab />
-          </TabsContent>
+          {/* Packages tab removed per request. */}
           <TabsContent value="customers" className="mt-5">
             <CustomersTab />
           </TabsContent>

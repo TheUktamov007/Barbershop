@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
+﻿import { createServerFn } from "@tanstack/react-start";
 import {
   listBranches,
   listMasters,
@@ -48,21 +48,23 @@ export const listCatalogFn = createServerFn({ method: "POST" })
 
 // ---------- Admin auth helper (TG initData OR adminPass) ----------
 import { checkAdmin } from "./server/admin-auth";
-async function requireAdmin(
-  initData?: string,
-  adminPass?: string,
-): Promise<{ ok: boolean }> {
-  const a = await checkAdmin({ initData, adminPass });
+type AdminBase = {
+  initData?: string;
+  adminPass?: string;
+  sessionToken?: string;
+};
+
+async function requireAdmin(creds: AdminBase): Promise<{ ok: boolean }> {
+  const a = await checkAdmin(creds);
   return { ok: a.isAdmin };
 }
 
 // ---------- Admin: upsert/delete ----------
-type AdminBase = { initData?: string; adminPass?: string };
 
 export const upsertBranchFn = createServerFn({ method: "POST" })
   .inputValidator((data: AdminBase & { branch: Branch }) => data)
   .handler(async ({ data }) => {
-    const auth = await requireAdmin(data.initData, data.adminPass);
+    const auth = await requireAdmin(data);
     if (!auth.ok) return { ok: false, error: "admin only" };
     await upsertBranch(data.branch);
     return { ok: true };
@@ -71,7 +73,7 @@ export const upsertBranchFn = createServerFn({ method: "POST" })
 export const deleteBranchFn = createServerFn({ method: "POST" })
   .inputValidator((data: AdminBase & { id: string }) => data)
   .handler(async ({ data }) => {
-    const auth = await requireAdmin(data.initData, data.adminPass);
+    const auth = await requireAdmin(data);
     if (!auth.ok) return { ok: false, error: "admin only" };
     await deleteBranch(data.id);
     return { ok: true };
@@ -80,7 +82,7 @@ export const deleteBranchFn = createServerFn({ method: "POST" })
 export const upsertServiceFn = createServerFn({ method: "POST" })
   .inputValidator((data: AdminBase & { service: Service }) => data)
   .handler(async ({ data }) => {
-    const auth = await requireAdmin(data.initData, data.adminPass);
+    const auth = await requireAdmin(data);
     if (!auth.ok) return { ok: false, error: "admin only" };
     await upsertService(data.service);
     return { ok: true };
@@ -89,7 +91,7 @@ export const upsertServiceFn = createServerFn({ method: "POST" })
 export const deleteServiceFn = createServerFn({ method: "POST" })
   .inputValidator((data: AdminBase & { id: string }) => data)
   .handler(async ({ data }) => {
-    const auth = await requireAdmin(data.initData, data.adminPass);
+    const auth = await requireAdmin(data);
     if (!auth.ok) return { ok: false, error: "admin only" };
     await deleteService(data.id);
     return { ok: true };
@@ -98,7 +100,7 @@ export const deleteServiceFn = createServerFn({ method: "POST" })
 export const upsertMasterFn = createServerFn({ method: "POST" })
   .inputValidator((data: AdminBase & { master: Master }) => data)
   .handler(async ({ data }) => {
-    const auth = await requireAdmin(data.initData, data.adminPass);
+    const auth = await requireAdmin(data);
     if (!auth.ok) return { ok: false, error: "admin only" };
     await upsertMaster(data.master);
     return { ok: true };
@@ -107,7 +109,7 @@ export const upsertMasterFn = createServerFn({ method: "POST" })
 export const deleteMasterFn = createServerFn({ method: "POST" })
   .inputValidator((data: AdminBase & { id: string }) => data)
   .handler(async ({ data }) => {
-    const auth = await requireAdmin(data.initData, data.adminPass);
+    const auth = await requireAdmin(data);
     if (!auth.ok) return { ok: false, error: "admin only" };
     await deleteMaster(data.id);
     return { ok: true };
@@ -116,7 +118,7 @@ export const deleteMasterFn = createServerFn({ method: "POST" })
 export const upsertPromoFn = createServerFn({ method: "POST" })
   .inputValidator((data: AdminBase & { promo: Promo }) => data)
   .handler(async ({ data }) => {
-    const auth = await requireAdmin(data.initData, data.adminPass);
+    const auth = await requireAdmin(data);
     if (!auth.ok) return { ok: false, error: "admin only" };
     await upsertPromo(data.promo);
     return { ok: true };
@@ -125,7 +127,7 @@ export const upsertPromoFn = createServerFn({ method: "POST" })
 export const deletePromoFn = createServerFn({ method: "POST" })
   .inputValidator((data: AdminBase & { id: string }) => data)
   .handler(async ({ data }) => {
-    const auth = await requireAdmin(data.initData, data.adminPass);
+    const auth = await requireAdmin(data);
     if (!auth.ok) return { ok: false, error: "admin only" };
     await deletePromo(data.id);
     return { ok: true };

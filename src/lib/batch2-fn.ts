@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
+﻿import { createServerFn } from "@tanstack/react-start";
 import { checkAdmin, checkUser } from "./server/admin-auth";
 import { getEnv } from "./server/env";
 import {
@@ -11,7 +11,7 @@ import {
   type CustomerProfile,
 } from "./server/customer-db";
 
-type AdminAuth = { initData?: string; adminPass?: string };
+type AdminAuth = { initData?: string; adminPass?: string; sessionToken?: string };
 
 // =================== Broadcast ===================
 
@@ -121,7 +121,7 @@ export const getMyReferralFn = createServerFn({ method: "POST" })
   );
 
 /**
- * Called from the client when start_param contains "ref_<code>" — links the
+ * Called from the client when start_param contains "ref_<code>" вЂ” links the
  * current user to that referrer if not already linked.
  */
 export const claimReferralFn = createServerFn({ method: "POST" })
@@ -139,7 +139,7 @@ export const claimReferralFn = createServerFn({ method: "POST" })
       const referrer = await findCustomerByReferralCode(data.refCode);
       if (!referrer || referrer.tgUserId === a.user.id) return { ok: false };
       await setReferrer(a.user.id, referrer.tgUserId);
-      // Bonus awarded after the new user's FIRST completed visit — for now
+      // Bonus awarded after the new user's FIRST completed visit вЂ” for now
       // we just link them. (Could move to maybeAccrueBonus to trigger then.)
       return { ok: true };
     },
@@ -220,16 +220,16 @@ export const exportBookingsCsvFn = createServerFn({ method: "POST" })
     const header = [
       "ID",
       "TG_ID",
-      "Клиент",
-      "Услуга",
-      "Мастер",
-      "Филиал",
-      "Когда",
-      "Длительность",
-      "Цена",
-      "Статус",
-      "Причина отмены",
-      "Создано",
+      "РљР»РёРµРЅС‚",
+      "РЈСЃР»СѓРіР°",
+      "РњР°СЃС‚РµСЂ",
+      "Р¤РёР»РёР°Р»",
+      "РљРѕРіРґР°",
+      "Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ",
+      "Р¦РµРЅР°",
+      "РЎС‚Р°С‚СѓСЃ",
+      "РџСЂРёС‡РёРЅР° РѕС‚РјРµРЅС‹",
+      "РЎРѕР·РґР°РЅРѕ",
     ].join(",");
     const body = rows
       .map((r) =>
@@ -249,7 +249,7 @@ export const exportBookingsCsvFn = createServerFn({ method: "POST" })
         ].join(","),
       )
       .join("\n");
-    return { ok: true, csv: "﻿" + header + "\n" + body };
+    return { ok: true, csv: "п»ї" + header + "\n" + body };
   });
 
 export const exportCustomersCsvFn = createServerFn({ method: "POST" })
@@ -282,15 +282,15 @@ export const exportCustomersCsvFn = createServerFn({ method: "POST" })
     };
     const header = [
       "TG_ID",
-      "Имя",
-      "Фамилия",
+      "РРјСЏ",
+      "Р¤Р°РјРёР»РёСЏ",
       "Username",
-      "Телефон",
-      "Бонусы",
-      "Потрачено",
-      "Визитов",
-      "ДР",
-      "Регистрация",
+      "РўРµР»РµС„РѕРЅ",
+      "Р‘РѕРЅСѓСЃС‹",
+      "РџРѕС‚СЂР°С‡РµРЅРѕ",
+      "Р’РёР·РёС‚РѕРІ",
+      "Р”Р ",
+      "Р РµРіРёСЃС‚СЂР°С†РёСЏ",
     ].join(",");
     const body = rows
       .map((r) =>
@@ -308,7 +308,7 @@ export const exportCustomersCsvFn = createServerFn({ method: "POST" })
         ].join(","),
       )
       .join("\n");
-    return { ok: true, csv: "﻿" + header + "\n" + body };
+    return { ok: true, csv: "п»ї" + header + "\n" + body };
   });
 
 export type { CustomerProfile };

@@ -1,10 +1,10 @@
-import { createServerFn } from "@tanstack/react-start";
+﻿import { createServerFn } from "@tanstack/react-start";
 import { checkAdmin } from "./server/admin-auth";
 import { getEnv } from "./server/env";
 import { recomputeMasterRating } from "./server/reviews-db";
 import type { Review } from "./server/reviews-db";
 
-type AdminAuth = { initData?: string; adminPass?: string };
+type AdminAuth = { initData?: string; adminPass?: string; sessionToken?: string };
 
 // =================== Review moderation ===================
 

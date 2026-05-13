@@ -2,7 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { checkAdmin } from "./server/admin-auth";
 import { getEnv } from "./server/env";
 
-type AdminAuth = { initData?: string; adminPass?: string };
+type AdminAuth = {
+  initData?: string;
+  adminPass?: string;
+  sessionToken?: string;
+};
 
 // Accept up to ~5 MB of base64 (effective ~3.7 MB binary). Bigger images get
 // rejected — admin should compress in the browser first.

@@ -14,7 +14,11 @@ import {
 } from "./server/customer-db";
 import { getEnv } from "./server/env";
 
-type AdminAuth = { initData?: string; adminPass?: string };
+type AdminAuth = {
+  initData?: string;
+  adminPass?: string;
+  sessionToken?: string;
+};
 
 async function requireAdmin(creds: AdminAuth) {
   const a = await checkAdmin(creds);

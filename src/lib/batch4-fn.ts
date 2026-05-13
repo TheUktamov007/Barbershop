@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
+﻿import { createServerFn } from "@tanstack/react-start";
 import { checkAdmin, checkUser } from "./server/admin-auth";
 import {
   createCertificate,
@@ -16,7 +16,7 @@ import {
   type Package,
 } from "./server/cert-pkg-db";
 
-type AdminAuth = { initData?: string; adminPass?: string };
+type AdminAuth = { initData?: string; adminPass?: string; sessionToken?: string };
 
 // ===== Certificates =====
 
@@ -76,11 +76,11 @@ export const lookupCertByCodeFn = createServerFn({ method: "POST" })
       const a = await checkUser(data.initData);
       if (!a.ok || !a.user) return { ok: false, error: "not authenticated" };
       const cert = await findCertByCode(data.code);
-      if (!cert) return { ok: false, error: "Сертификат не найден" };
-      if (cert.status !== "active") return { ok: false, error: "Сертификат недействителен" };
-      if (cert.amountBalance <= 0) return { ok: false, error: "Сертификат полностью использован" };
+      if (!cert) return { ok: false, error: "РЎРµСЂС‚РёС„РёРєР°С‚ РЅРµ РЅР°Р№РґРµРЅ" };
+      if (cert.status !== "active") return { ok: false, error: "РЎРµСЂС‚РёС„РёРєР°С‚ РЅРµРґРµР№СЃС‚РІРёС‚РµР»РµРЅ" };
+      if (cert.amountBalance <= 0) return { ok: false, error: "РЎРµСЂС‚РёС„РёРєР°С‚ РїРѕР»РЅРѕСЃС‚СЊСЋ РёСЃРїРѕР»СЊР·РѕРІР°РЅ" };
       if (cert.expiresAt && cert.expiresAt < new Date().toISOString().slice(0, 10)) {
-        return { ok: false, error: "Сертификат истёк" };
+        return { ok: false, error: "РЎРµСЂС‚РёС„РёРєР°С‚ РёСЃС‚С‘Рє" };
       }
       return { ok: true, cert };
     },

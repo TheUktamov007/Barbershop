@@ -297,12 +297,18 @@ export const createBookingFn = createServerFn({ method: "POST" })
 
 export const cancelBookingFn = createServerFn({ method: "POST" })
   .inputValidator(
-    (data: { initData?: string; adminPass?: string; id: string }) => data,
+    (data: {
+      initData?: string;
+      adminPass?: string;
+      sessionToken?: string;
+      id: string;
+    }) => data,
   )
   .handler(async ({ data }): Promise<{ ok: boolean; error?: string }> => {
     const auth = await checkAdmin({
       initData: data.initData,
       adminPass: data.adminPass,
+      sessionToken: data.sessionToken,
     });
     if (!auth.ok) return { ok: false, error: "not authenticated" };
 
@@ -310,6 +316,15 @@ export const cancelBookingFn = createServerFn({ method: "POST" })
     if (!b) return { ok: false, error: "booking not found" };
     if (!auth.isAdmin && (!auth.user || b.tgUserId !== auth.user.id)) {
       return { ok: false, error: "forbidden" };
+    }
+    // Master role can only cancel bookings assigned to them.
+    if (
+      auth.admin &&
+      auth.admin.role === "master" &&
+      auth.admin.masterId &&
+      b.masterId !== auth.admin.masterId
+    ) {
+      return { ok: false, error: "Чужая запись" };
     }
     await setBookingStatus(data.id, "cancelled");
 
@@ -345,6 +360,7 @@ export const setBookingStatusFn = createServerFn({ method: "POST" })
     (data: {
       initData?: string;
       adminPass?: string;
+      sessionToken?: string;
       id: string;
       status: BookingStatus;
     }) => data,
@@ -353,11 +369,22 @@ export const setBookingStatusFn = createServerFn({ method: "POST" })
     const auth = await checkAdmin({
       initData: data.initData,
       adminPass: data.adminPass,
+      sessionToken: data.sessionToken,
     });
     if (!auth.isAdmin) return { ok: false, error: "admin only" };
 
     const b = await findBooking(data.id);
     if (!b) return { ok: false, error: "booking not found" };
+
+    // Master role: only their bookings.
+    if (
+      auth.admin &&
+      auth.admin.role === "master" &&
+      auth.admin.masterId &&
+      b.masterId !== auth.admin.masterId
+    ) {
+      return { ok: false, error: "Чужая запись" };
+    }
 
     await setBookingStatus(data.id, data.status);
 
