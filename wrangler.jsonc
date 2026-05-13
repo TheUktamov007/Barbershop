@@ -10,7 +10,7 @@
 		{
 			"binding": "DB",
 			"database_name": "bravo-db",
-			"database_id": "REPLACE_WITH_NEW_D1_ID",
+			"database_id": "b265f28f-34a6-4132-997f-f5214563a567",
 			"migrations_dir": "migrations"
 		}
 	],
