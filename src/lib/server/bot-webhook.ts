@@ -32,7 +32,7 @@ export type TgUpdate = {
   callback_query?: TgCallbackQuery;
 };
 
-const MINI_APP_URL = "https://tanstack-start-app.bravobarber.workers.dev";
+const MINI_APP_URL = "https://bravo-barbershop.lumebeauty.workers.dev";
 
 async function tgApi(
   method: string,
