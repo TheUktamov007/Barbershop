@@ -33,6 +33,7 @@ import {
   Sparkles,
   Lock as LockIcon,
   Timer,
+  Gift,
 } from "lucide-react";
 
 const searchSchema = z.object({
@@ -1034,7 +1035,7 @@ function ConfirmStep({
         </div>
         {promoEligible && promoDiscount > 0 && (
           <div className="mt-1 flex items-center justify-between text-[14px] text-accent">
-            <span>🎁 Акция «{promo!.title}» −{promo!.discountPct}%</span>
+            <span className="inline-flex items-center gap-1.5"><Gift className="h-3.5 w-3.5" strokeWidth={1.8} />Акция «{promo!.title}» −{promo!.discountPct}%</span>
             <span>−{promoDiscount.toLocaleString("ru-RU")}</span>
           </div>
         )}

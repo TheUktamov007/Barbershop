@@ -1,4 +1,14 @@
-import { Clock } from "lucide-react";
+import {
+  Clock,
+  Scissors,
+  Users as UsersIcon,
+  Brush,
+  Baby,
+  Palette,
+  Sparkles,
+  Star,
+  type LucideIcon,
+} from "lucide-react";
 
 interface Props {
   image: string;
@@ -8,18 +18,18 @@ interface Props {
   category?: string;
 }
 
-const CATEGORY_EMOJI: Record<string, string> = {
-  haircut: "✂️",
-  beard: "🧔",
-  shave: "🪒",
-  kids: "👦",
-  coloring: "🎨",
-  styling: "💈",
-  combo: "⭐",
+const CATEGORY_ICON: Record<string, LucideIcon> = {
+  haircut: Scissors,
+  beard: UsersIcon,
+  shave: Brush,
+  kids: Baby,
+  coloring: Palette,
+  styling: Sparkles,
+  combo: Star,
 };
 
 export function ServiceCard({ image, title, duration, price, category }: Props) {
-  const emoji = category ? CATEGORY_EMOJI[category] : undefined;
+  const Icon = category ? CATEGORY_ICON[category] : undefined;
   return (
     <article className="group relative cursor-pointer overflow-hidden rounded-[22px] bg-card text-card-foreground shadow-warm-sm transition-all hover:-translate-y-0.5 hover:shadow-warm ring-1 ring-bg-ivory/5">
       <div className="aspect-square overflow-hidden">
@@ -31,12 +41,12 @@ export function ServiceCard({ image, title, duration, price, category }: Props) 
           height={800}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        {emoji && (
+        {Icon && (
           <span
             aria-hidden
-            className="absolute left-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-bg-deep/70 text-[15px] backdrop-blur-md ring-1 ring-bg-ivory/15"
+            className="absolute left-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-bg-deep/75 text-accent backdrop-blur-md ring-1 ring-bg-ivory/15"
           >
-            {emoji}
+            <Icon className="h-4 w-4" strokeWidth={1.8} />
           </span>
         )}
       </div>

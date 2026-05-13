@@ -47,6 +47,14 @@ import {
   LogOut,
   Users,
   Copy,
+  MessageCircle,
+  Cake,
+  Bell,
+  History,
+  Medal,
+  Trophy,
+  Crown,
+  Gem,
 } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
@@ -208,7 +216,7 @@ function ProfilePage() {
           className="flex items-center gap-3 rounded-[20px] bg-bg-ivory/5 p-4 active:bg-bg-ivory/10"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-pill bg-accent/15 text-accent">
-            💬
+            <MessageCircle className="h-4 w-4" strokeWidth={1.8} aria-hidden="true" />
           </div>
           <div className="flex-1">
             <p className="text-[14px] font-semibold">Написать в Bravo</p>
@@ -232,7 +240,7 @@ function ProfilePage() {
                 key={c.id}
                 className="rounded-[20px] glass-card p-4 flex items-center gap-3"
               >
-                <span className="text-[24px]" aria-hidden>🎁</span>
+                <Gift className="h-6 w-6 text-accent" strokeWidth={1.7} aria-hidden="true" />
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-semibold">
                     {c.amountBalance.toLocaleString("ru-RU")} сум
@@ -262,7 +270,7 @@ function ProfilePage() {
               return (
                 <div key={p.id} className="rounded-[20px] glass-card p-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-[24px]" aria-hidden>🎫</span>
+                    <Ticket className="h-6 w-6 text-accent" strokeWidth={1.7} aria-hidden="true" />
                     <div className="flex-1 min-w-0">
                       <p className="text-[14px] font-semibold truncate">{p.title}</p>
                       <p className="text-[11px] text-bg-ivory/60">
@@ -344,7 +352,7 @@ function ProfilePage() {
             className="flex w-full items-center gap-3 rounded-[20px] bg-bg-ivory/5 p-4 active:bg-bg-ivory/10 transition-colors"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-pill bg-bg-ivory/10 text-bg-ivory/70">
-              ⌚
+              <History className="h-4 w-4" strokeWidth={1.8} aria-hidden="true" />
             </div>
             <div className="flex-1 text-left">
               <p className="text-[14px] font-semibold">История визитов</p>
@@ -797,10 +805,10 @@ function ClubDrawer({
           </div>
           <div className="rounded-[20px] bg-bg-ivory/5 p-4 space-y-2 text-[13px]">
             <p className="font-semibold mb-1">Как работают уровни</p>
-            <p className="text-bg-ivory/70">🥉 <b>Bronze</b> — 5% кешбэк (новый клиент)</p>
-            <p className="text-bg-ivory/70">🥈 <b>Silver</b> — 8% (после 3 визитов)</p>
-            <p className="text-bg-ivory/70">🥇 <b>Gold</b> — 12% (после 10 визитов)</p>
-            <p className="text-bg-ivory/70">💎 <b>Platinum</b> — 15% (после 25 визитов)</p>
+            <p className="flex items-center gap-2 text-bg-ivory/70"><Medal className="h-4 w-4 text-[#cd7f32]" strokeWidth={1.8} /><b>Bronze</b> — 5% кешбэк (новый клиент)</p>
+            <p className="flex items-center gap-2 text-bg-ivory/70"><Medal className="h-4 w-4 text-bg-ivory/70" strokeWidth={1.8} /><b>Silver</b> — 8% (после 3 визитов)</p>
+            <p className="flex items-center gap-2 text-bg-ivory/70"><Trophy className="h-4 w-4 text-accent" strokeWidth={1.8} /><b>Gold</b> — 12% (после 10 визитов)</p>
+            <p className="flex items-center gap-2 text-bg-ivory/70"><Gem className="h-4 w-4 text-cyan-300" strokeWidth={1.8} /><b>Platinum</b> — 15% (после 25 визитов)</p>
           </div>
           <div className="rounded-[20px] bg-bg-ivory/5 p-4 text-[13px] text-bg-ivory/80">
             <p className="font-semibold mb-1">Как использовать бонусы</p>
@@ -909,7 +917,7 @@ function SettingsDrawer({
 
           <div className="rounded-[20px] bg-bg-ivory/5 p-4">
             <div className="mb-3 flex items-center gap-2">
-              <span className="text-[18px]" aria-hidden>🎂</span>
+              <Cake className="h-4 w-4 text-accent" strokeWidth={1.8} aria-hidden="true" />
               <span className="text-[13px] font-semibold uppercase tracking-wider text-bg-ivory/70">
                 День рождения
               </span>
@@ -945,7 +953,7 @@ function SettingsDrawer({
           {pushStatus.supported && vapidData?.ok && (
             <div className="rounded-[20px] bg-bg-ivory/5 p-4">
               <div className="mb-2 flex items-center gap-2">
-                <span aria-hidden>🔔</span>
+                <Bell className="h-4 w-4 text-accent" strokeWidth={1.8} aria-hidden="true" />
                 <span className="text-[13px] font-semibold uppercase tracking-wider text-bg-ivory/70">
                   Push-уведомления
                 </span>

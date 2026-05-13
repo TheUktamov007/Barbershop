@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Crown } from "lucide-react";
 
 export function LoyaltyBanner() {
   return (
@@ -17,8 +17,8 @@ export function LoyaltyBanner() {
           className="absolute left-0 top-0 bottom-0 w-1 barber-stripe"
         />
         <div className="relative flex items-start gap-3 pl-2">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-pill bg-accent text-accent-foreground text-[18px]">
-            💈
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-pill bg-accent text-accent-foreground">
+            <Crown className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
           </div>
           <div className="flex-1">
             <span className="caption text-accent">Bravo Club</span>
