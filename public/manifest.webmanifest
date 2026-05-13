@@ -1,0 +1,26 @@
+{
+  "name": "Bravo — барбершоп",
+  "short_name": "Bravo",
+  "description": "Премиальный барбершоп в Ташкенте. Онлайн-запись.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#2A1810",
+  "theme_color": "#2A1810",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "/assets/svc-manicure.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/svc-manicure.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

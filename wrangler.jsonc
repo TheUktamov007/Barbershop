@@ -1,0 +1,34 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "bravo-barbershop",
+	"compatibility_date": "2025-09-24",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"main": "src/server.ts",
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "bravo-db",
+			"database_id": "REPLACE_WITH_NEW_D1_ID",
+			"migrations_dir": "migrations"
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "PHOTOS",
+			"bucket_name": "bravo-photos"
+		},
+		{
+			"bucket_name": "bravo-photos",
+			"binding": "bravo_photos",
+			"remote": true
+		}
+	],
+	// Cron trigger: every 15 minutes — checks bookings and sends reminders.
+	"triggers": {
+		"crons": [
+			"*/15 * * * *"
+		]
+	}
+}

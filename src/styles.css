@@ -1,0 +1,160 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Skinora-inspired design system for a beauty-salon Telegram Mini App.
+ * Warm chocolate-caramel palette, premium minimal, mobile-first.
+ * All colors in oklch. Use semantic tokens — never hard-code hex.
+ */
+
+@theme inline {
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-pill: 999px;
+
+  --font-sans: "Manrope", "Inter", system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", "Playfair Display", serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-dark: var(--accent-dark);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-bg-deep: var(--bg-deep);
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-warm: var(--bg-warm);
+  --color-bg-soft: var(--bg-soft);
+  --color-bg-light: var(--bg-light);
+  --color-bg-cream: var(--bg-cream);
+  --color-bg-ivory: var(--bg-ivory);
+
+  --shadow-warm-sm: 0 4px 16px oklch(0.2 0.04 50 / 0.08);
+  --shadow-warm: 0 8px 32px oklch(0.2 0.04 50 / 0.12);
+  --shadow-warm-lg: 0 16px 48px oklch(0.2 0.04 50 / 0.18);
+}
+
+:root {
+  /* Skinora warm palette in oklch (approximates the spec hex values) */
+  --bg-deep: oklch(0.22 0.04 45);     /* #2A1810 */
+  --bg-primary: oklch(0.28 0.05 50);  /* #3D2817 */
+  --bg-warm: oklch(0.48 0.08 55);     /* #8B5A3C */
+  --bg-soft: oklch(0.69 0.07 60);     /* #C8987A */
+  --bg-light: oklch(0.86 0.04 70);    /* #E8D5C0 */
+  --bg-cream: oklch(0.94 0.02 75);    /* #F5EFE4 */
+  --bg-ivory: oklch(0.97 0.012 80);   /* #FAF6F0 */
+
+  --accent: oklch(0.78 0.09 70);        /* #D4A574 warm gold */
+  --accent-foreground: oklch(0.22 0.04 45);
+  --accent-dark: oklch(0.62 0.09 60);   /* #A67B4F */
+
+  --background: var(--bg-ivory);
+  --foreground: var(--bg-deep);
+
+  --card: oklch(1 0 0);
+  --card-foreground: var(--bg-deep);
+
+  --popover: var(--bg-ivory);
+  --popover-foreground: var(--bg-deep);
+
+  --primary: var(--bg-deep);
+  --primary-foreground: var(--bg-ivory);
+
+  --secondary: var(--bg-cream);
+  --secondary-foreground: var(--bg-deep);
+
+  --muted: var(--bg-cream);
+  --muted-foreground: oklch(0.52 0.03 60); /* #8B7766 */
+
+  --destructive: oklch(0.6 0.13 30);    /* terracotta */
+  --destructive-foreground: var(--bg-ivory);
+  --success: oklch(0.6 0.07 140);
+  --warning: var(--accent);
+
+  --border: oklch(0.86 0.02 70);
+  --input: oklch(0.86 0.02 70);
+  --ring: var(--accent);
+
+  --radius: 1.5rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html, body {
+    background-color: var(--color-bg-deep);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-sans);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  .font-serif-italic {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .caption {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+}
+
+@layer utilities {
+  .gradient-hero {
+    background:
+      radial-gradient(
+        ellipse 70% 60% at 50% 45%,
+        oklch(0.78 0.09 70 / 0.45) 0%,
+        oklch(0.48 0.08 55 / 0.85) 40%,
+        oklch(0.22 0.04 45) 80%
+      ),
+      linear-gradient(180deg, oklch(0.28 0.05 50) 0%, oklch(0.22 0.04 45) 100%);
+  }
+  .gradient-soft {
+    background: linear-gradient(180deg, var(--color-bg-cream) 0%, var(--color-bg-light) 100%);
+  }
+  .glass-card {
+    background: oklch(1 0 0 / 0.06);
+    backdrop-filter: blur(20px);
+    border: 1px solid oklch(1 0 0 / 0.1);
+  }
+  .safe-bottom {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);
+  }
+}
