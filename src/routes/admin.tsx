@@ -105,6 +105,7 @@ import {
   CalendarIcon,
   ChevronLeft,
   ChevronRight,
+  LogOut,
   Pencil,
   Plus,
   RotateCcw,
@@ -293,7 +294,13 @@ function AdminShell({ currentAdmin }: { currentAdmin: Admin | null }) {
       try { await adminLogoutFn({ data: { token } }); } catch {}
     }
     clearAdminSession();
-    if (typeof window !== "undefined") window.location.reload();
+    // Also clear legacy env-password fallback so we don't stay "unlocked".
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem("lume_admin_pass_v1");
+      } catch {}
+      window.location.reload();
+    }
   };
 
   const doExport = async (kind: "bookings" | "customers") => {
@@ -350,6 +357,7 @@ function AdminShell({ currentAdmin }: { currentAdmin: Admin | null }) {
                 if (confirm("Сбросить все данные к исходным?")) resetStore();
               }}
               className="text-bg-ivory/70 hover:text-bg-ivory border border-bg-ivory/15"
+              title="Сброс данных"
             >
               <RotateCcw className="h-4 w-4" />
             </Button>
@@ -357,11 +365,14 @@ function AdminShell({ currentAdmin }: { currentAdmin: Admin | null }) {
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleLogout}
-            className="text-bg-ivory/70 hover:text-bg-ivory border border-bg-ivory/15"
+            onClick={() => {
+              if (confirm("Выйти из админ-панели?")) handleLogout();
+            }}
+            className="border border-red-400/30 bg-red-500/10 text-red-300 hover:bg-red-500/20 hover:text-red-200"
             title="Выйти"
           >
-            <X className="h-4 w-4" />
+            <LogOut className="h-4 w-4 md:mr-1" />
+            <span className="hidden md:inline">Выйти</span>
           </Button>
         </div>
       </header>
