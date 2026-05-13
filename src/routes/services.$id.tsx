@@ -5,7 +5,7 @@ import { formatDuration, formatSum } from "@/lib/mock";
 import { useStore } from "@/lib/store";
 import { useLocalizeCategory } from "@/lib/localize";
 import { useMasterReviews } from "@/lib/reviews-client";
-import { ArrowLeft, Clock, Star, Sparkles } from "lucide-react";
+import { ArrowLeft, Clock, Star, Scissors } from "lucide-react";
 
 export const Route = createFileRoute("/services/$id")({
   head: () => ({
@@ -83,7 +83,7 @@ function ServiceDetail() {
 
       <section className="mt-8 px-5">
         <h2 className="flex items-center gap-2 text-[14px] font-semibold uppercase tracking-wider text-bg-ivory/60">
-          <Sparkles className="h-3.5 w-3.5 text-accent" />
+          <Scissors className="h-3.5 w-3.5 text-accent" />
           Барберы
         </h2>
         <div className="mt-3 space-y-2">

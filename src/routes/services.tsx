@@ -98,6 +98,7 @@ function ServicesPage() {
                   title={L(s.title, s.titleUz)}
                   duration={formatDuration(s.durationMin)}
                   price={formatSum(s.price).replace(" сум", "")}
+                  category={s.category}
                 />
               </Link>
             ))}

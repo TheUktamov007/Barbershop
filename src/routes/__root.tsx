@@ -84,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1",
       },
-      { name: "theme-color", content: "#2A1810" },
+      { name: "theme-color", content: "#14110E" },
       { title: "Bravo — премиальный барбершоп" },
       { name: "description", content: "Онлайн-запись в сеть премиальных барбершопов Bravo." },
       { property: "og:title", content: "Bravo Barbershop" },

@@ -75,6 +75,7 @@ function Home() {
                     title={L(s.title, s.titleUz)}
                     duration={formatDuration(s.durationMin)}
                     price={formatSum(s.price)}
+                    category={s.category}
                   />
                 ))}
             {!isLoading && topServices.length === 0 && (

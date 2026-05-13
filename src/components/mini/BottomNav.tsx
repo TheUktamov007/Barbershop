@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Sparkles, CalendarDays, User } from "lucide-react";
+import { Home, Scissors, CalendarDays, User } from "lucide-react";
 import { useT } from "@/lib/i18n";
 
 export function BottomNav() {
@@ -7,7 +7,7 @@ export function BottomNav() {
   const t = useT();
   const items = [
     { to: "/", label: t("nav.home"), icon: Home },
-    { to: "/services", label: t("nav.services"), icon: Sparkles },
+    { to: "/services", label: t("nav.services"), icon: Scissors },
     { to: "/booking", label: t("nav.booking"), icon: CalendarDays },
     { to: "/profile", label: t("nav.profile"), icon: User },
   ] as const;

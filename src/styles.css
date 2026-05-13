@@ -5,17 +5,17 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Skinora-inspired design system for a beauty-salon Telegram Mini App.
- * Warm chocolate-caramel palette, premium minimal, mobile-first.
+ * Bravo Barbershop design system — masculine, sharp, premium.
+ * Deep onyx + copper-amber accent. Mobile-first.
  * All colors in oklch. Use semantic tokens — never hard-code hex.
  */
 
 @theme inline {
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 24px;
-  --radius-2xl: 32px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
+  --radius-2xl: 28px;
   --radius-pill: 999px;
 
   --font-sans: "Manrope", "Inter", system-ui, sans-serif;
@@ -52,24 +52,24 @@
   --color-bg-cream: var(--bg-cream);
   --color-bg-ivory: var(--bg-ivory);
 
-  --shadow-warm-sm: 0 4px 16px oklch(0.2 0.04 50 / 0.08);
-  --shadow-warm: 0 8px 32px oklch(0.2 0.04 50 / 0.12);
-  --shadow-warm-lg: 0 16px 48px oklch(0.2 0.04 50 / 0.18);
+  --shadow-warm-sm: 0 4px 16px oklch(0.1 0.02 40 / 0.35);
+  --shadow-warm: 0 8px 32px oklch(0.1 0.02 40 / 0.45);
+  --shadow-warm-lg: 0 16px 48px oklch(0.08 0.02 40 / 0.6);
 }
 
 :root {
-  /* Skinora warm palette in oklch (approximates the spec hex values) */
-  --bg-deep: oklch(0.22 0.04 45);     /* #2A1810 */
-  --bg-primary: oklch(0.28 0.05 50);  /* #3D2817 */
-  --bg-warm: oklch(0.48 0.08 55);     /* #8B5A3C */
-  --bg-soft: oklch(0.69 0.07 60);     /* #C8987A */
-  --bg-light: oklch(0.86 0.04 70);    /* #E8D5C0 */
-  --bg-cream: oklch(0.94 0.02 75);    /* #F5EFE4 */
-  --bg-ivory: oklch(0.97 0.012 80);   /* #FAF6F0 */
+  /* Bravo onyx + copper palette */
+  --bg-deep: oklch(0.16 0.015 40);     /* #14110E — onyx black */
+  --bg-primary: oklch(0.22 0.02 45);   /* #221C18 — graphite */
+  --bg-warm: oklch(0.42 0.06 50);      /* warm graphite */
+  --bg-soft: oklch(0.65 0.06 55);
+  --bg-light: oklch(0.82 0.03 65);
+  --bg-cream: oklch(0.93 0.02 75);
+  --bg-ivory: oklch(0.97 0.012 80);
 
-  --accent: oklch(0.78 0.09 70);        /* #D4A574 warm gold */
-  --accent-foreground: oklch(0.22 0.04 45);
-  --accent-dark: oklch(0.62 0.09 60);   /* #A67B4F */
+  --accent: oklch(0.74 0.14 55);          /* copper / amber */
+  --accent-foreground: oklch(0.14 0.015 40);
+  --accent-dark: oklch(0.55 0.13 45);     /* burnt copper */
 
   --background: var(--bg-ivory);
   --foreground: var(--bg-deep);
@@ -87,18 +87,18 @@
   --secondary-foreground: var(--bg-deep);
 
   --muted: var(--bg-cream);
-  --muted-foreground: oklch(0.52 0.03 60); /* #8B7766 */
+  --muted-foreground: oklch(0.5 0.025 55);
 
-  --destructive: oklch(0.6 0.13 30);    /* terracotta */
+  --destructive: oklch(0.6 0.18 28);
   --destructive-foreground: var(--bg-ivory);
-  --success: oklch(0.6 0.07 140);
+  --success: oklch(0.62 0.12 145);
   --warning: var(--accent);
 
-  --border: oklch(0.86 0.02 70);
-  --input: oklch(0.86 0.02 70);
+  --border: oklch(0.82 0.02 65);
+  --input: oklch(0.82 0.02 65);
   --ring: var(--accent);
 
-  --radius: 1.5rem;
+  --radius: 1.25rem;
 }
 
 @layer base {
@@ -116,21 +116,22 @@
 
   h1, h2, h3, h4 {
     font-family: var(--font-sans);
-    letter-spacing: -0.02em;
-    line-height: 1.05;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    font-weight: 800;
   }
 
   .font-serif-italic {
     font-family: var(--font-serif);
     font-style: italic;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: -0.01em;
   }
 
   .caption {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
   }
 }
@@ -139,20 +140,28 @@
   .gradient-hero {
     background:
       radial-gradient(
-        ellipse 70% 60% at 50% 45%,
-        oklch(0.78 0.09 70 / 0.45) 0%,
-        oklch(0.48 0.08 55 / 0.85) 40%,
-        oklch(0.22 0.04 45) 80%
+        ellipse 80% 60% at 50% 35%,
+        oklch(0.74 0.14 55 / 0.45) 0%,
+        oklch(0.32 0.05 45 / 0.85) 45%,
+        oklch(0.14 0.015 40) 85%
       ),
-      linear-gradient(180deg, oklch(0.28 0.05 50) 0%, oklch(0.22 0.04 45) 100%);
+      linear-gradient(180deg, oklch(0.22 0.02 45) 0%, oklch(0.14 0.015 40) 100%);
   }
   .gradient-soft {
     background: linear-gradient(180deg, var(--color-bg-cream) 0%, var(--color-bg-light) 100%);
   }
   .glass-card {
-    background: oklch(1 0 0 / 0.06);
+    background: oklch(1 0 0 / 0.05);
     backdrop-filter: blur(20px);
-    border: 1px solid oklch(1 0 0 / 0.1);
+    border: 1px solid oklch(1 0 0 / 0.08);
+  }
+  .barber-stripe {
+    background: repeating-linear-gradient(
+      45deg,
+      var(--color-accent) 0 8px,
+      oklch(0.97 0.012 80) 8px 16px,
+      oklch(0.14 0.015 40) 16px 24px
+    );
   }
   .safe-bottom {
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);
