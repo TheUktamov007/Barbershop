@@ -24,8 +24,8 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(payload.title, {
       body: payload.body,
-      icon: "/assets/svc-manicure.jpg",
-      badge: "/assets/svc-manicure.jpg",
+      icon: "/assets/svc-haircut.svg",
+      badge: "/assets/svc-haircut.svg",
       tag: payload.tag || "bravo",
       data: { url: payload.url || "/" },
     }),

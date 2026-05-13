@@ -11,15 +11,9 @@
   "lang": "ru",
   "icons": [
     {
-      "src": "/assets/svc-manicure.jpg",
-      "sizes": "192x192",
-      "type": "image/jpeg",
-      "purpose": "any"
-    },
-    {
-      "src": "/assets/svc-manicure.jpg",
-      "sizes": "512x512",
-      "type": "image/jpeg",
+      "src": "/assets/svc-haircut.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "any"
     }
   ]

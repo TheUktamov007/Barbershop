@@ -1,15 +1,16 @@
 // Images live in /public/assets/ so they have stable URL paths and can be
 // stored in D1 (which can't reference bundled-import URLs).
-const svcHaircut = "/assets/svc-manicure.jpg";
-const svcBeard = "/assets/svc-pedicure.jpg";
-const svcShave = "/assets/svc-lashes.jpg";
-const svcKids = "/assets/svc-brows.jpg";
-const svcColoring = "/assets/svc-skincare.jpg";
-const svcStyling = "/assets/svc-hair.jpg";
-const master1 = "/assets/master-1.jpg";
-const master2 = "/assets/master-2.jpg";
-const master3 = "/assets/master-3.jpg";
-const branch1 = "/assets/branch-1.jpg";
+const svcHaircut = "/assets/svc-haircut.svg";
+const svcBeard = "/assets/svc-beard.svg";
+const svcShave = "/assets/svc-shave.svg";
+const svcKids = "/assets/svc-kids.svg";
+const svcColoring = "/assets/svc-coloring.svg";
+const svcStyling = "/assets/svc-styling.svg";
+const svcCombo = "/assets/svc-combo.svg";
+const master1 = "/assets/master-1.svg";
+const master2 = "/assets/master-2.svg";
+const master3 = "/assets/master-3.svg";
+const branch1 = "/assets/branch-barbershop.svg";
 
 export type CategoryId =
   | "all"
@@ -168,7 +169,7 @@ export const services: Service[] = [
     title: "Стрижка + Борода",
     durationMin: 90,
     price: 250000,
-    image: svcHaircut,
+    image: svcCombo,
     description: "Комплекс: мужская стрижка и моделирование бороды по выгодной цене.",
     popular: true,
   },
@@ -237,8 +238,8 @@ export const branches: Branch[] = [
   },
 ];
 
-const promo1 = "/assets/promo-1.jpg";
-const promo2 = "/assets/promo-2.jpg";
+const promo1 = "/assets/promo-1.svg";
+const promo2 = "/assets/promo-2.svg";
 
 export const promos: Promo[] = [
   {

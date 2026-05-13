@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useT } from "@/lib/i18n";
 import { useLang } from "@/lib/lang";
 
-const heroImg = "/assets/hero-hands.jpg";
+const heroImg = "/assets/hero-bravo.svg";
 
 export function HeroRadial() {
   const t = useT();

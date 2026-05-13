@@ -1,5 +1,6 @@
 import { getEnv } from "./env";
 import { listBookingsForUser } from "./booking-db";
+import { getOrCreateCustomer } from "./customer-db";
 
 type TgUser = {
   id: number;
@@ -72,6 +73,20 @@ function fmtDate(iso: string): string {
 
 async function onStart(msg: TgMessage) {
   const name = msg.from?.first_name ?? "друг";
+  // Register the user in customers table so admin sees them right after /start,
+  // not only after their first booking.
+  if (msg.from?.id) {
+    try {
+      await getOrCreateCustomer({
+        tgUserId: msg.from.id,
+        firstName: msg.from.first_name,
+        lastName: msg.from.last_name,
+        username: msg.from.username,
+      });
+    } catch (e) {
+      console.warn("[bot] /start: getOrCreateCustomer failed", e);
+    }
+  }
   const text =
     `<b>Добро пожаловать в Bravo Barbershop ✂️</b>\n\n` +
     `${name}, мы рады вас видеть! Запишитесь онлайн за минуту — нажмите кнопку ниже.\n\n` +
