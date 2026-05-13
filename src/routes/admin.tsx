@@ -124,16 +124,32 @@ export const Route = createFileRoute("/admin")({
 
 import { useTelegramAuth, getTelegramWebApp } from "@/lib/telegram-client";
 import { setAdminPass, getAdminPass } from "@/lib/admin-creds";
+import {
+  getAdminToken,
+  setAdminToken,
+  getCachedAdmin,
+  setCachedAdmin,
+  clearAdminSession,
+} from "@/lib/admin-session";
+import {
+  adminLoginFn,
+  adminLogoutFn,
+  listAdminsFn,
+  createAdminFn,
+  deleteAdminFn,
+  updateAdminFn,
+} from "@/lib/admins-fn";
+import type { Admin, AdminRole } from "@/lib/server/admin-db";
 
 function AdminPage() {
   const { loading, result } = useTelegramAuth();
   const [passUnlocked, setPassUnlocked] = useState(false);
+  const [sessionAdmin, setSessionAdmin] = useState<Admin | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    // Password is stored in localStorage by setAdminPass() and sent to the
-    // server with every admin call — so its presence == "unlocked".
     setPassUnlocked(!!getAdminPass());
+    setSessionAdmin(getCachedAdmin());
   }, []);
 
   if (loading) {
@@ -144,32 +160,59 @@ function AdminPage() {
     );
   }
 
-  if (result?.isAdmin || passUnlocked) return <AdminShell />;
-  return <AccessDenied result={result} onPassUnlock={() => setPassUnlocked(true)} />;
+  if (result?.isAdmin || passUnlocked || sessionAdmin) {
+    return <AdminShell currentAdmin={sessionAdmin} />;
+  }
+  return (
+    <AccessDenied
+      result={result}
+      onPassUnlock={() => setPassUnlocked(true)}
+      onSessionLogin={(a) => setSessionAdmin(a)}
+    />
+  );
 }
 
 function AccessDenied({
   result,
   onPassUnlock,
+  onSessionLogin,
 }: {
   result: { ok: boolean; user: { id: number; first_name?: string } | null } | null;
   onPassUnlock: () => void;
+  onSessionLogin: (a: Admin) => void;
 }) {
   const unsafeUser = getTelegramWebApp()?.initDataUnsafe?.user;
   const userId = result?.user?.id ?? unsafeUser?.id;
   const firstName = result?.user?.first_name ?? unsafeUser?.first_name;
+  const [login, setLogin] = useState("admin");
   const [pass, setPass] = useState("");
   const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const tryPassword = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!pass.trim()) {
-      setErr("Введите пароль");
+    if (!login.trim() || !pass) {
+      setErr("Введите логин и пароль");
       return;
     }
-    // Store as-is — server validates against ADMIN_PASSWORD secret.
-    setAdminPass(pass);
-    onPassUnlock();
+    setBusy(true);
+    setErr("");
+    try {
+      const r = await adminLoginFn({ data: { login: login.trim(), password: pass } });
+      if (r.ok) {
+        setAdminToken(r.token);
+        setCachedAdmin(r.admin);
+        onSessionLogin(r.admin);
+        return;
+      }
+      // Fallback: maybe user typed the old env ADMIN_PASSWORD — try password path.
+      setAdminPass(pass);
+      onPassUnlock();
+    } catch (e) {
+      setErr((e as Error)?.message ?? "Ошибка входа");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -180,32 +223,32 @@ function AccessDenied({
           <h1 className="text-[22px] font-bold">Вход в админку</h1>
         </div>
 
-        {userId && (
+        {userId && !result?.isAdmin && (
           <div className="rounded-[16px] bg-bg-ivory/10 p-3 text-left">
             <p className="text-[12px] text-bg-ivory/70">
-              Вы вошли как <b>{firstName ?? "пользователь"}</b>
-              {result?.ok ? " (Telegram ✓)" : ""}, но этот аккаунт не админ.
+              Вы открыли админку как <b>{firstName ?? "пользователь"}</b>
+              {result?.ok ? " (Telegram ✓)" : ""}. Войдите ниже.
             </p>
             <p className="mt-2 text-[11px] uppercase tracking-wider text-bg-ivory/50">
               Ваш Telegram ID
             </p>
-            <p className="mt-1 font-mono text-[18px] font-bold text-accent">
+            <p className="mt-1 font-mono text-[14px] font-bold text-accent">
               {userId}
-            </p>
-            <p className="mt-2 text-[11px] text-bg-ivory/50">
-              Чтобы войти автоматически, на компьютере:
-              <br />
-              <code className="text-bg-ivory/80">
-                echo "{userId}" | npx wrangler secret put ADMIN_TELEGRAM_ID
-              </code>
             </p>
           </div>
         )}
 
-        <form onSubmit={tryPassword} className="space-y-3">
-          <p className="text-[12px] text-bg-ivory/60 text-center">
-            {userId ? "Или введите пароль администратора:" : "Введите пароль администратора:"}
-          </p>
+        <form onSubmit={submit} className="space-y-3">
+          <Input
+            type="text"
+            value={login}
+            onChange={(e) => {
+              setLogin(e.target.value);
+              setErr("");
+            }}
+            placeholder="Логин"
+            autoComplete="username"
+          />
           <Input
             type="password"
             value={pass}
@@ -214,13 +257,18 @@ function AccessDenied({
               setErr("");
             }}
             placeholder="Пароль"
+            autoComplete="current-password"
             autoFocus
           />
           {err && <p className="text-[12px] text-red-400 text-center">{err}</p>}
-          <Button type="submit" variant="pill-accent" className="w-full">
-            Войти
+          <Button type="submit" variant="pill-accent" className="w-full" disabled={busy}>
+            {busy ? "Вход…" : "Войти"}
           </Button>
         </form>
+
+        <p className="text-center text-[11px] text-bg-ivory/45">
+          По умолчанию: логин <b>admin</b>, пароль = значение секрета <code>ADMIN_PASSWORD</code>.
+        </p>
 
         <Link
           to="/"
@@ -233,10 +281,20 @@ function AccessDenied({
   );
 }
 
-function AdminShell() {
+function AdminShell({ currentAdmin }: { currentAdmin: Admin | null }) {
   const [broadcastOpen, setBroadcastOpen] = useState(false);
   const exportBookingsMut = useExportBookings();
   const exportCustomersMut = useExportCustomers();
+  const isSuper = !currentAdmin || currentAdmin.role === "super";
+
+  const handleLogout = async () => {
+    const token = getAdminToken();
+    if (token) {
+      try { await adminLogoutFn({ data: { token } }); } catch {}
+    }
+    clearAdminSession();
+    if (typeof window !== "undefined") window.location.reload();
+  };
 
   const doExport = async (kind: "bookings" | "customers") => {
     const mut = kind === "bookings" ? exportBookingsMut : exportCustomersMut;
@@ -284,15 +342,26 @@ function AdminShell() {
           >
             ⇣ <span className="hidden md:inline ml-1">CSV</span>
           </Button>
+          {isSuper && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                if (confirm("Сбросить все данные к исходным?")) resetStore();
+              }}
+              className="text-bg-ivory/70 hover:text-bg-ivory border border-bg-ivory/15"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => {
-              if (confirm("Сбросить все данные к исходным?")) resetStore();
-            }}
+            onClick={handleLogout}
             className="text-bg-ivory/70 hover:text-bg-ivory border border-bg-ivory/15"
+            title="Выйти"
           >
-            <RotateCcw className="h-4 w-4" />
+            <X className="h-4 w-4" />
           </Button>
         </div>
       </header>
@@ -304,15 +373,16 @@ function AdminShell() {
             <TabsTrigger value="dashboard" className="shrink-0">Дашборд</TabsTrigger>
             <TabsTrigger value="calendar" className="shrink-0">Календарь</TabsTrigger>
             <TabsTrigger value="bookings" className="shrink-0">Записи</TabsTrigger>
-            <TabsTrigger value="customers" className="shrink-0">Клиенты</TabsTrigger>
-            <TabsTrigger value="reviews" className="shrink-0">Отзывы</TabsTrigger>
-            <TabsTrigger value="earnings" className="shrink-0">Доходы</TabsTrigger>
-            <TabsTrigger value="certs" className="shrink-0">Ваучеры</TabsTrigger>
-            <TabsTrigger value="packages" className="shrink-0">Абонементы</TabsTrigger>
-            <TabsTrigger value="branches" className="shrink-0">Филиалы</TabsTrigger>
-            <TabsTrigger value="services" className="shrink-0">Услуги</TabsTrigger>
-            <TabsTrigger value="masters" className="shrink-0">Мастера</TabsTrigger>
-            <TabsTrigger value="promos" className="shrink-0">Акции</TabsTrigger>
+            {isSuper && <TabsTrigger value="customers" className="shrink-0">Клиенты</TabsTrigger>}
+            {isSuper && <TabsTrigger value="reviews" className="shrink-0">Отзывы</TabsTrigger>}
+            {isSuper && <TabsTrigger value="earnings" className="shrink-0">Доходы</TabsTrigger>}
+            {isSuper && <TabsTrigger value="certs" className="shrink-0">Ваучеры</TabsTrigger>}
+            {isSuper && <TabsTrigger value="packages" className="shrink-0">Абонементы</TabsTrigger>}
+            {isSuper && <TabsTrigger value="branches" className="shrink-0">Филиалы</TabsTrigger>}
+            {isSuper && <TabsTrigger value="services" className="shrink-0">Услуги</TabsTrigger>}
+            {isSuper && <TabsTrigger value="masters" className="shrink-0">Мастера</TabsTrigger>}
+            {isSuper && <TabsTrigger value="promos" className="shrink-0">Акции</TabsTrigger>}
+            {isSuper && <TabsTrigger value="staff" className="shrink-0">Сотрудники</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="dashboard" className="mt-5">
@@ -350,6 +420,9 @@ function AdminShell() {
           </TabsContent>
           <TabsContent value="promos" className="mt-5">
             <PromosTab />
+          </TabsContent>
+          <TabsContent value="staff" className="mt-5">
+            <StaffTab />
           </TabsContent>
         </Tabs>
       </div>
@@ -2705,7 +2778,7 @@ function RevenueCharts({ bookings }: { bookings: ClientBooking[] }) {
             />
             <Tooltip
               contentStyle={{
-                background: "#2A1810",
+                background: "#0B0B0B",
                 border: "1px solid rgba(255,255,255,0.15)",
                 borderRadius: 12,
                 fontSize: 12,
@@ -2713,7 +2786,7 @@ function RevenueCharts({ bookings }: { bookings: ClientBooking[] }) {
               labelStyle={{ color: "#fff" }}
               formatter={(v: number) => v.toLocaleString("ru-RU") + " сум"}
             />
-            <Line type="monotone" dataKey="revenue" stroke="#D4A574" strokeWidth={2} dot={{ r: 3 }} />
+            <Line type="monotone" dataKey="revenue" stroke="#FFD93D" strokeWidth={2} dot={{ r: 3, fill: "#FFD93D" }} />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -2726,14 +2799,14 @@ function RevenueCharts({ bookings }: { bookings: ClientBooking[] }) {
             <YAxis tick={{ fontSize: 10, fill: "rgba(255,255,255,0.5)" }} width={30} />
             <Tooltip
               contentStyle={{
-                background: "#2A1810",
+                background: "#0B0B0B",
                 border: "1px solid rgba(255,255,255,0.15)",
                 borderRadius: 12,
                 fontSize: 12,
               }}
               formatter={(v: number) => v + " записей"}
             />
-            <Bar dataKey="count" fill="rgba(212,165,116,0.4)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="count" fill="rgba(255,217,61,0.5)" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -3432,3 +3505,254 @@ function PackagesTab() {
     </div>
   );
 }
+
+/* ---------- Staff (admins) tab ---------- */
+
+import { adminAuthPayload } from "@/lib/admin-creds";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+function useAdminsList() {
+  return useQuery({
+    queryKey: ["admins"],
+    queryFn: () => listAdminsFn({ data: adminAuthPayload() }),
+  });
+}
+
+function StaffTab() {
+  const { data: admins, isLoading } = useAdminsList();
+  const { masters } = useStore();
+  const qc = useQueryClient();
+  const [openCreate, setOpenCreate] = useState(false);
+
+  const delMut = useMutation({
+    mutationFn: (id: string) =>
+      deleteAdminFn({ data: { ...adminAuthPayload(), id } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admins"] }),
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-[18px] font-bold">Сотрудники</h2>
+        <Button variant="pill-accent" size="sm" onClick={() => setOpenCreate(true)}>
+          <Plus className="h-4 w-4 mr-1" /> Добавить
+        </Button>
+      </div>
+
+      <p className="text-[12px] text-bg-ivory/55">
+        Супер-админ видит всё и управляет сотрудниками. У мастера — доступ только
+        к его записям; новые брони мастеру приходят в Telegram, если указан Telegram ID.
+      </p>
+
+      {isLoading ? (
+        <p className="text-[13px] text-bg-ivory/50">Загрузка…</p>
+      ) : !admins || admins.length === 0 ? (
+        <p className="rounded-[16px] bg-bg-ivory/5 p-4 text-[13px] text-bg-ivory/60">
+          Пока только супер-админ. Добавьте мастера, чтобы он получал уведомления.
+        </p>
+      ) : (
+        <div className="space-y-2">
+          {admins.map((a) => {
+            const m = masters.find((x) => x.id === a.masterId);
+            return (
+              <div
+                key={a.id}
+                className="rounded-[16px] bg-bg-ivory/5 p-3 flex items-center gap-3"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-semibold">
+                    {a.displayName ?? a.login}{" "}
+                    <span
+                      className={`ml-1 rounded-pill px-2 py-0.5 text-[10px] font-bold uppercase ${
+                        a.role === "super"
+                          ? "bg-accent text-accent-foreground"
+                          : "bg-bg-ivory/10 text-bg-ivory/70"
+                      }`}
+                    >
+                      {a.role}
+                    </span>
+                  </p>
+                  <p className="text-[11px] text-bg-ivory/55">
+                    Логин: <span className="font-mono">{a.login}</span>
+                    {m ? ` · мастер: ${m.name}` : ""}
+                    {a.tgUserId ? ` · TG: ${a.tgUserId}` : ""}
+                  </p>
+                </div>
+                {a.login !== "admin" && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      if (confirm(`Удалить «${a.login}»?`)) delMut.mutate(a.id);
+                    }}
+                    className="text-red-300 hover:text-red-200"
+                    title="Удалить"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <CreateAdminDialog
+        open={openCreate}
+        onClose={() => setOpenCreate(false)}
+        masters={masters}
+        onCreated={() => {
+          qc.invalidateQueries({ queryKey: ["admins"] });
+          setOpenCreate(false);
+        }}
+      />
+    </div>
+  );
+}
+
+function CreateAdminDialog({
+  open,
+  onClose,
+  masters,
+  onCreated,
+}: {
+  open: boolean;
+  onClose: () => void;
+  masters: Master[];
+  onCreated: () => void;
+}) {
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState<AdminRole>("master");
+  const [masterId, setMasterId] = useState<string>("");
+  const [tgUserId, setTgUserId] = useState<string>("");
+  const [displayName, setDisplayName] = useState("");
+  const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!open) {
+      setLogin("");
+      setPassword("");
+      setRole("master");
+      setMasterId("");
+      setTgUserId("");
+      setDisplayName("");
+      setErr("");
+    }
+  }, [open]);
+
+  const submit = async () => {
+    setErr("");
+    if (!login.trim() || password.length < 4) {
+      setErr("Логин обязателен, пароль ≥ 4 символов");
+      return;
+    }
+    setBusy(true);
+    try {
+      const r = await createAdminFn({
+        data: {
+          ...adminAuthPayload(),
+          login: login.trim(),
+          password,
+          role,
+          masterId: role === "master" && masterId ? masterId : null,
+          tgUserId: tgUserId ? Number(tgUserId) : null,
+          displayName: displayName.trim() || null,
+        },
+      });
+      if (!r.ok) setErr(r.error ?? "Не удалось создать");
+      else onCreated();
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="bg-bg-deep text-bg-ivory border-bg-ivory/15">
+        <DialogHeader>
+          <DialogTitle>Новый сотрудник</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-3">
+          <div>
+            <Label>Имя</Label>
+            <Input
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="Например: Тимур Каримов"
+            />
+          </div>
+          <div>
+            <Label>Логин *</Label>
+            <Input
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
+              placeholder="timur"
+              autoComplete="off"
+            />
+          </div>
+          <div>
+            <Label>Пароль *</Label>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
+            />
+          </div>
+          <div>
+            <Label>Роль</Label>
+            <Select value={role} onValueChange={(v) => setRole(v as AdminRole)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="master">Мастер (видит свои записи)</SelectItem>
+                <SelectItem value="super">Супер-админ (полный доступ)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {role === "master" && (
+            <div>
+              <Label>Привязать к мастеру</Label>
+              <Select value={masterId} onValueChange={setMasterId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите мастера" />
+                </SelectTrigger>
+                <SelectContent>
+                  {masters.map((m) => (
+                    <SelectItem key={m.id} value={m.id}>
+                      {m.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+          <div>
+            <Label>Telegram User ID (для уведомлений)</Label>
+            <Input
+              inputMode="numeric"
+              value={tgUserId}
+              onChange={(e) => setTgUserId(e.target.value.replace(/\D/g, ""))}
+              placeholder="например: 123456789"
+            />
+            <p className="mt-1 text-[11px] text-bg-ivory/50">
+              Если указан — на этот аккаунт придёт сообщение в Telegram при новой записи.
+            </p>
+          </div>
+          {err && <p className="text-[12px] text-red-400">{err}</p>}
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={onClose}>Отмена</Button>
+          <Button variant="pill-accent" onClick={submit} disabled={busy}>
+            {busy ? "Создание…" : "Создать"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+

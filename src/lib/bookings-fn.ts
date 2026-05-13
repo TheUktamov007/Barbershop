@@ -12,6 +12,7 @@ import {
   type ClientBooking,
 } from "./server/booking-db";
 import { getEnv } from "./server/env";
+import { findMasterAdminForMasterId } from "./server/admin-db";
 import { maybeAccrueBonus, getOrCreateCustomer, spendBonusForBooking, getCustomer } from "./server/customer-db";
 import { spendCertificate, usePackageVisit, findCertByCode } from "./server/cert-pkg-db";
 import { pushToUser } from "./server/webpush";
@@ -65,16 +66,25 @@ export const listBookingsFn = createServerFn({ method: "POST" })
     return await listBookingsForUser(auth.user.id);
   });
 
-/** Admin-only: returns ALL bookings. Accepts TG initData OR adminPass (browser fallback). */
+/** Admin-only: returns ALL bookings. Master-role admins only see their own. */
 export const listAllBookingsFn = createServerFn({ method: "POST" })
-  .inputValidator((data: { initData?: string; adminPass?: string }) => data)
+  .inputValidator(
+    (data: { initData?: string; adminPass?: string; sessionToken?: string }) =>
+      data,
+  )
   .handler(async ({ data }): Promise<ClientBooking[]> => {
     const auth = await checkAdmin({
       initData: data.initData,
       adminPass: data.adminPass,
+      sessionToken: data.sessionToken,
     });
     if (!auth.isAdmin) return [];
-    return await listAllBookings();
+    const all = await listAllBookings();
+    // Master-role admins see only bookings assigned to their master_id.
+    if (auth.admin && auth.admin.role === "master" && auth.admin.masterId) {
+      return all.filter((b) => b.masterId === auth.admin!.masterId);
+    }
+    return all;
   });
 
 export type CreateBookingFnInput = {
@@ -258,6 +268,21 @@ export const createBookingFn = createServerFn({ method: "POST" })
       if (adminId) await tgDM(adminId, adminText);
       if (auth.user.id && String(auth.user.id) !== String(adminId)) {
         await tgDM(auth.user.id, userText);
+      }
+      // Notify the assigned master (if linked to an admins row with tg_user_id).
+      if (data.masterId) {
+        try {
+          const masterAdmin = await findMasterAdminForMasterId(data.masterId);
+          if (
+            masterAdmin?.tg_user_id &&
+            String(masterAdmin.tg_user_id) !== String(adminId) &&
+            String(masterAdmin.tg_user_id) !== String(auth.user.id)
+          ) {
+            await tgDM(masterAdmin.tg_user_id, adminText);
+          }
+        } catch (e) {
+          console.warn("[booking] notify master failed", e);
+        }
       }
 
       // Web Push to the customer (in addition to TG). Best-effort.

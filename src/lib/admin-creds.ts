@@ -1,4 +1,5 @@
 import { getTelegramWebApp } from "./telegram-client";
+import { getAdminToken } from "./admin-session";
 
 const PASS_KEY = "lume_admin_pass_v1";
 
@@ -23,10 +24,15 @@ export function clearAdminPass(): void {
   localStorage.removeItem(PASS_KEY);
 }
 
-/** Build auth payload for admin server fns. Includes both creds — server picks valid one. */
-export function adminAuthPayload(): { initData?: string; adminPass?: string } {
+/** Build auth payload for admin server fns. Includes all creds — server picks valid one. */
+export function adminAuthPayload(): {
+  initData?: string;
+  adminPass?: string;
+  sessionToken?: string;
+} {
   return {
     initData: getTelegramWebApp()?.initData ?? "",
     adminPass: getAdminPass(),
+    sessionToken: getAdminToken() || undefined,
   };
 }
