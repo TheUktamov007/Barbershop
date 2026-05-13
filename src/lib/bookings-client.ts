@@ -5,11 +5,13 @@ import { adminAuthPayload } from "./admin-creds";
 import {
   cancelBookingFn,
   createBookingFn,
+  createGuestBookingFn,
   listAllBookingsFn,
   listBookingsFn,
   rescheduleBookingFn,
   setBookingStatusFn,
   type CreateBookingFnInput,
+  type CreateGuestBookingFnInput,
 } from "./bookings-fn";
 import type {
   BookingStatus,
@@ -96,6 +98,25 @@ export function useCreateBooking() {
       qc.invalidateQueries({ queryKey: ["bookings"] });
     },
   });
+}
+
+/** Guest booking via plain web (no Telegram). Requires name + phone. */
+export function useCreateGuestBooking() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: CreateGuestBookingFnInput) =>
+      createGuestBookingFn({ data: input }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["bookings"] });
+    },
+  });
+}
+
+/** Helper: is the page open inside Telegram Mini App? */
+export function isInTelegram(): boolean {
+  if (typeof window === "undefined") return false;
+  const tg = getTelegramWebApp();
+  return !!(tg && tg.initData && tg.initData.length > 0);
 }
 
 export function useCancelBooking() {

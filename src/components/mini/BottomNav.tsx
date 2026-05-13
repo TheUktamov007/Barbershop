@@ -1,16 +1,25 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Scissors, CalendarDays, User } from "lucide-react";
+import { Home, Scissors, CalendarDays, User, MapPin } from "lucide-react";
 import { useT } from "@/lib/i18n";
+import { isInTelegram } from "@/lib/bookings-client";
 
 export function BottomNav() {
   const { pathname } = useLocation();
   const t = useT();
-  const items = [
-    { to: "/", label: t("nav.home"), icon: Home },
-    { to: "/services", label: t("nav.services"), icon: Scissors },
-    { to: "/booking", label: t("nav.booking"), icon: CalendarDays },
-    { to: "/profile", label: t("nav.profile"), icon: User },
-  ] as const;
+  const inTg = isInTelegram();
+  const items = inTg
+    ? ([
+        { to: "/", label: t("nav.home"), icon: Home },
+        { to: "/services", label: t("nav.services"), icon: Scissors },
+        { to: "/booking", label: t("nav.booking"), icon: CalendarDays },
+        { to: "/profile", label: t("nav.profile"), icon: User },
+      ] as const)
+    : ([
+        { to: "/", label: t("nav.home"), icon: Home },
+        { to: "/services", label: t("nav.services"), icon: Scissors },
+        { to: "/booking", label: t("nav.booking"), icon: CalendarDays },
+        { to: "/branches", label: "Филиалы", icon: MapPin },
+      ] as const);
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-bottom px-3 pt-2">
       <div className="mx-auto flex max-w-md items-center justify-between rounded-pill bg-bg-deep/85 backdrop-blur-xl border border-bg-ivory/10 px-3 py-2 shadow-warm-lg">

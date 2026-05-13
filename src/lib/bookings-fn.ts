@@ -479,3 +479,155 @@ export const rescheduleBookingFn = createServerFn({ method: "POST" })
     }
     return { ok: true };
   });
+
+/**
+ * Public guest booking — no Telegram auth required. Used by the plain web
+ * (non-Mini-App) flow. Identifies the customer by phone + name only.
+ */
+export type CreateGuestBookingFnInput = {
+  customerName: string;
+  customerPhone: string;
+  serviceTitle: string;
+  serviceIds?: string[];
+  masterId?: string;
+  masterName: string;
+  branchId?: string;
+  branchName: string;
+  startAt: string;
+  durationMin: number;
+  price: number;
+  promoId?: string;
+};
+
+export const createGuestBookingFn = createServerFn({ method: "POST" })
+  .inputValidator((data: CreateGuestBookingFnInput) => data)
+  .handler(
+    async ({
+      data,
+    }): Promise<{ ok: boolean; booking?: ClientBooking; error?: string }> => {
+      const name = (data.customerName ?? "").trim();
+      const phone = (data.customerPhone ?? "").trim();
+      if (!name || !phone) {
+        return { ok: false, error: "Имя и телефон обязательны" };
+      }
+
+      // Apply promo discount if any.
+      let promoDiscount = 0;
+      let promoIdToStore: string | null = null;
+      if (data.promoId) {
+        const env = getEnv();
+        const row = await env.DB.prepare(
+          `SELECT id, discount_pct, service_ids, active FROM promos WHERE id = ?1`,
+        )
+          .bind(data.promoId)
+          .first<{
+            id: string;
+            discount_pct: number;
+            service_ids: string;
+            active: number;
+          }>();
+        if (row && row.active === 1 && (row.discount_pct ?? 0) > 0) {
+          let promoSvcIds: string[] = [];
+          try {
+            const v = JSON.parse(row.service_ids ?? "[]");
+            if (Array.isArray(v)) promoSvcIds = v.map(String);
+          } catch {}
+          const applies =
+            promoSvcIds.length === 0 ||
+            (data.serviceIds ?? []).some((id) => promoSvcIds.includes(id));
+          if (applies) {
+            promoDiscount = Math.floor(
+              (data.price * (row.discount_pct ?? 0)) / 100,
+            );
+            promoIdToStore = row.id;
+          }
+        }
+      }
+      const effectivePrice = Math.max(0, data.price - promoDiscount);
+
+      let booking;
+      try {
+        booking = await createBooking({
+          tgUserId: undefined,
+          customerName: name,
+          customerUsername: undefined,
+          serviceTitle: data.serviceTitle,
+          serviceIds: data.serviceIds,
+          masterId: data.masterId,
+          masterName: data.masterName,
+          branchId: data.branchId,
+          branchName: data.branchName,
+          startAt: data.startAt,
+          durationMin: data.durationMin,
+          price: effectivePrice,
+        });
+      } catch (e) {
+        const msg = (e as Error)?.message ?? String(e);
+        if (msg === "SLOT_TAKEN") {
+          return {
+            ok: false,
+            error: "Этот слот только что заняли. Выберите другое время.",
+          };
+        }
+        throw e;
+      }
+
+      // Persist promo + phone on the row.
+      const env = getEnv();
+      if (promoIdToStore) {
+        await env.DB.prepare(
+          `UPDATE bookings SET promo_id = ?1, promo_discount = ?2 WHERE id = ?3`,
+        )
+          .bind(promoIdToStore, promoDiscount, booking.id)
+          .run();
+      }
+      // Stash phone in customer_username field as a fallback so admin sees it
+      // (we don't have a dedicated guest_phone column to avoid a migration).
+      await env.DB.prepare(
+        `UPDATE bookings SET customer_username = COALESCE(customer_username, ?1) WHERE id = ?2`,
+      )
+        .bind(phone, booking.id)
+        .run();
+
+      // Notify admin (no user side — guests don't have a TG chat).
+      const adminId = env.ADMIN_TELEGRAM_ID ?? "";
+      const dateLabel = new Date(booking.startAt).toLocaleString("ru-RU", {
+        day: "numeric",
+        month: "long",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const adminText =
+        `<b>🆕 Новая запись Bravo (сайт)</b>\n\n` +
+        `<b>Клиент:</b> ${name}\n` +
+        `<b>Телефон:</b> ${phone}\n` +
+        `<b>Когда:</b> ${dateLabel}\n` +
+        `<b>Филиал:</b> ${booking.branchName}\n` +
+        `<b>Мастер:</b> ${booking.masterName}\n\n` +
+        `<b>Услуга:</b> ${booking.serviceTitle}\n` +
+        `<b>Длительность:</b> ${booking.durationMin} мин\n` +
+        `<b>Сумма:</b> ${data.price.toLocaleString("ru-RU")} сум` +
+        (promoDiscount > 0
+          ? `\n<b>Акция:</b> −${promoDiscount.toLocaleString("ru-RU")}` +
+            `\n<b>К оплате:</b> ${effectivePrice.toLocaleString("ru-RU")} сум`
+          : "");
+      if (adminId) await tgDM(adminId, adminText);
+
+      // Notify the assigned master (if linked).
+      if (data.masterId) {
+        try {
+          const masterAdmin = await findMasterAdminForMasterId(data.masterId);
+          if (
+            masterAdmin?.tg_user_id &&
+            String(masterAdmin.tg_user_id) !== String(adminId)
+          ) {
+            await tgDM(masterAdmin.tg_user_id, adminText);
+          }
+        } catch (e) {
+          console.warn("[guest-booking] notify master failed", e);
+        }
+      }
+
+      return { ok: true, booking };
+    },
+  );

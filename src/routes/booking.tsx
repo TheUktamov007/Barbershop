@@ -5,7 +5,11 @@ import { BottomNav } from "@/components/mini/BottomNav";
 import { Button } from "@/components/ui/button";
 import { formatDuration, formatSum } from "@/lib/mock";
 import { useStore } from "@/lib/store";
-import { useCreateBooking } from "@/lib/bookings-client";
+import {
+  useCreateBooking,
+  useCreateGuestBooking,
+  isInTelegram,
+} from "@/lib/bookings-client";
 import { useMyLoyalty, useSetMyPhone } from "@/lib/loyalty-client";
 import { useToggleFavorite } from "@/lib/batch2-client";
 import { useMyCerts, useMyPackages, useLookupCert } from "@/lib/batch4-client";
@@ -662,6 +666,8 @@ function ConfirmStep({
   }, [lockKey]);
 
   const createBookingMut = useCreateBooking();
+  const createGuestBookingMut = useCreateGuestBooking();
+  const inTg = isInTelegram();
   const { data: loyalty } = useMyLoyalty();
   const { data: myCerts } = useMyCerts();
   const { data: myPkgs } = useMyPackages();
@@ -669,6 +675,7 @@ function ConfirmStep({
   const setPhoneMut = useSetMyPhone();
   const [useBonus, setUseBonus] = useState(false);
   const [phone, setPhone] = useState<string>("");
+  const [guestName, setGuestName] = useState<string>("");
   const [certCode, setCertCode] = useState(initialPromoCode ?? "");
   // If user came in via "Применить промокод" from profile, try the code on mount.
   const lookupCertMutLocal = useLookupCert();
@@ -743,8 +750,49 @@ function ConfirmStep({
       services.length === 1
         ? services[0].title
         : `${services[0].title} +${services.length - 1}`;
-    // Save phone first if user typed one and it differs from saved.
     const trimmedPhone = phone.trim();
+    const trimmedName = guestName.trim();
+
+    // Guest path: no Telegram → require name + phone
+    if (!inTg) {
+      if (!trimmedName || !trimmedPhone) {
+        haptic("error");
+        const msg = "Введите имя и номер телефона";
+        if (typeof window !== "undefined") window.alert(msg);
+        return;
+      }
+      try {
+        const res = await createGuestBookingMut.mutateAsync({
+          customerName: trimmedName,
+          customerPhone: trimmedPhone,
+          serviceTitle: title,
+          serviceIds: services.map((s) => s.id),
+          masterId: master?.id,
+          masterName: master?.name ?? "Любой свободный",
+          branchId: branch!.id,
+          branchName: branch!.name,
+          startAt: `${date}T${time}:00`,
+          durationMin: totalDuration,
+          price: totalPrice,
+          promoId: promoEligible ? promoId : undefined,
+        });
+        if (!res.ok) {
+          const msg = res.error ?? "Не удалось создать запись. Попробуйте ещё раз.";
+          if (typeof window !== "undefined") window.alert(msg);
+          onSlotLost();
+          return;
+        }
+      } catch (e) {
+        console.warn("[guest-booking] create threw:", e);
+        if (typeof window !== "undefined")
+          window.alert("Ошибка сети. Попробуйте ещё раз.");
+        return;
+      }
+      onConfirm();
+      return;
+    }
+
+    // Telegram path: save phone in profile (if changed), then create booking with auth.
     if (trimmedPhone && trimmedPhone !== loyalty?.profile?.phone) {
       try {
         await setPhoneMut.mutateAsync(trimmedPhone);
@@ -835,11 +883,30 @@ function ConfirmStep({
           : "Время удержания слота истекло. Выберите время заново."}
       </div>
 
-      {/* Phone field — required so the salon can call back if needed. */}
+      {/* Guest mode: ask for name (TG users already have first_name). */}
+      {!inTg && (
+        <div className="rounded-[20px] bg-bg-ivory/5 p-4">
+          <label className="block">
+            <span className="text-[11px] uppercase tracking-wider text-bg-ivory/50">
+              Ваше имя *
+            </span>
+            <input
+              type="text"
+              value={guestName}
+              onChange={(e) => setGuestName(e.target.value)}
+              placeholder="Например: Тимур"
+              className="mt-1 w-full bg-transparent text-[15px] text-bg-ivory outline-none placeholder:text-bg-ivory/30"
+              autoComplete="name"
+            />
+          </label>
+        </div>
+      )}
+
+      {/* Phone field — required for callback. */}
       <div className="rounded-[20px] bg-bg-ivory/5 p-4">
         <label className="block">
           <span className="text-[11px] uppercase tracking-wider text-bg-ivory/50">
-            Номер телефона
+            Номер телефона {!inTg && "*"}
           </span>
           <input
             type="tel"
@@ -848,17 +915,20 @@ function ConfirmStep({
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+998 90 123 45 67"
             className="mt-1 w-full bg-transparent text-[15px] text-bg-ivory outline-none placeholder:text-bg-ivory/30"
+            autoComplete="tel"
           />
         </label>
         <p className="mt-1 text-[11px] text-bg-ivory/50">
-          {phoneSaved
-            ? "Сохранён в профиле. Можно изменить."
-            : "Сохраним в профиле для будущих записей. На него позвонит барбершоп при необходимости."}
+          {!inTg
+            ? "Барбершоп свяжется с вами для подтверждения."
+            : phoneSaved
+              ? "Сохранён в профиле. Можно изменить."
+              : "Сохраним в профиле для будущих записей. На него позвонит барбершоп при необходимости."}
         </p>
       </div>
 
       {/* Active packages: pick one to use a visit */}
-      {eligiblePkgs.length > 0 && (
+      {inTg && eligiblePkgs.length > 0 && (
         <div className="rounded-[20px] bg-bg-ivory/5 p-4 space-y-2">
           <p className="text-[11px] uppercase tracking-wider text-bg-ivory/50">
             Использовать абонемент
@@ -902,8 +972,8 @@ function ConfirmStep({
         </div>
       )}
 
-      {/* Certificate code entry */}
-      {!packageId && (
+      {/* Certificate code entry — only in Telegram (cert is bound to a TG user) */}
+      {inTg && !packageId && (
         <div className="rounded-[20px] bg-bg-ivory/5 p-4 space-y-2">
           <p className="text-[11px] uppercase tracking-wider text-bg-ivory/50">
             Ваучер
@@ -991,7 +1061,7 @@ function ConfirmStep({
         </div>
       )}
 
-      {availableBonus > 0 && (
+      {inTg && availableBonus > 0 && (
         <button
           type="button"
           onClick={() => {
