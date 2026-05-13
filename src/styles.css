@@ -58,18 +58,18 @@
 }
 
 :root {
-  /* Bravo onyx + dark gold palette */
-  --bg-deep: oklch(0.14 0.01 80);      /* #0E0C08 — jet black w/ warm undertone */
-  --bg-primary: oklch(0.20 0.015 80);  /* #1B1812 — charcoal */
-  --bg-warm: oklch(0.38 0.04 85);      /* aged brass shadow */
-  --bg-soft: oklch(0.62 0.05 85);
-  --bg-light: oklch(0.82 0.03 85);
-  --bg-cream: oklch(0.93 0.02 85);
-  --bg-ivory: oklch(0.97 0.012 85);
+  /* Bravo jet-black + vivid yellow palette (booking-app style) */
+  --bg-deep: oklch(0.13 0 0);          /* #0B0B0B — true jet black */
+  --bg-primary: oklch(0.18 0 0);       /* #161616 — charcoal card */
+  --bg-warm: oklch(0.32 0.005 90);     /* dim grey */
+  --bg-soft: oklch(0.55 0.01 90);
+  --bg-light: oklch(0.78 0.005 90);
+  --bg-cream: oklch(0.92 0.005 90);
+  --bg-ivory: oklch(0.98 0.003 90);    /* near-white */
 
-  --accent: oklch(0.70 0.13 85);          /* dark gold / antique gold */
-  --accent-foreground: oklch(0.12 0.01 80);
-  --accent-dark: oklch(0.52 0.11 80);     /* deep bronze gold */
+  --accent: oklch(0.90 0.18 100);         /* vivid sunny yellow #FFD93D-ish */
+  --accent-foreground: oklch(0.13 0 0);   /* black on yellow */
+  --accent-dark: oklch(0.78 0.17 95);     /* slightly deeper yellow */
 
   --background: var(--bg-ivory);
   --foreground: var(--bg-deep);
@@ -89,13 +89,13 @@
   --muted: var(--bg-cream);
   --muted-foreground: oklch(0.5 0.025 55);
 
-  --destructive: oklch(0.6 0.18 28);
-  --destructive-foreground: var(--bg-ivory);
-  --success: oklch(0.62 0.12 145);
+  --destructive: oklch(0.62 0.22 25);  /* bright red badge */
+  --destructive-foreground: oklch(0.98 0.003 90);
+  --success: oklch(0.7 0.18 145);
   --warning: var(--accent);
 
-  --border: oklch(0.82 0.02 65);
-  --input: oklch(0.82 0.02 65);
+  --border: oklch(0.28 0 0);
+  --input: oklch(0.22 0 0);
   --ring: var(--accent);
 
   --radius: 1.25rem;
@@ -140,12 +140,12 @@
   .gradient-hero {
     background:
       radial-gradient(
-        ellipse 80% 60% at 50% 35%,
-        oklch(0.70 0.13 85 / 0.40) 0%,
-        oklch(0.28 0.04 85 / 0.85) 45%,
-        oklch(0.14 0.01 80) 85%
+        ellipse 80% 60% at 50% 30%,
+        oklch(0.90 0.18 100 / 0.22) 0%,
+        oklch(0.20 0 0 / 0.85) 50%,
+        oklch(0.13 0 0) 90%
       ),
-      linear-gradient(180deg, oklch(0.20 0.015 80) 0%, oklch(0.14 0.01 80) 100%);
+      linear-gradient(180deg, oklch(0.18 0 0) 0%, oklch(0.13 0 0) 100%);
   }
   .gradient-soft {
     background: linear-gradient(180deg, var(--color-bg-cream) 0%, var(--color-bg-light) 100%);
@@ -159,8 +159,8 @@
     background: repeating-linear-gradient(
       45deg,
       var(--color-accent) 0 8px,
-      oklch(0.52 0.11 80) 8px 16px,
-      oklch(0.14 0.01 80) 16px 24px
+      oklch(0.98 0.003 90) 8px 16px,
+      oklch(0.13 0 0) 16px 24px
     );
   }
   .safe-bottom {
