@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { BottomNav } from "@/components/mini/BottomNav";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/lib/store";
@@ -7,8 +7,8 @@ import { ArrowLeft, MapPin, Phone, Clock, Navigation } from "lucide-react";
 export const Route = createFileRoute("/branches")({
   head: () => ({
     meta: [
-      { title: "Филиалы — Bravo" },
-      { name: "description", content: "Все барбершопы сети Bravo в Ташкенте." },
+      { title: "Р¤РёР»РёР°Р»С‹ вЂ” Bravo" },
+      { name: "description", content: "Р’СЃРµ Р±Р°СЂР±РµСЂС€РѕРїС‹ СЃРµС‚Рё Bravo РІ РўР°С€РєРµРЅС‚Рµ." },
     ],
   }),
   component: BranchesPage,
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/branches")({
 function BranchesPage() {
   const { branches } = useStore();
   return (
-    <main className="mx-auto min-h-screen max-w-md bg-bg-deep pb-28 text-bg-ivory">
+    <main className="mx-auto min-h-screen max-w-md md:max-w-5xl bg-bg-deep pb-28 text-bg-ivory">
       <header className="px-5 pt-12">
         <div className="flex items-center gap-3">
           <Link
@@ -27,26 +27,26 @@ function BranchesPage() {
             <ArrowLeft className="h-5 w-5" strokeWidth={1.7} />
           </Link>
           <div>
-            <span className="caption text-accent">Сеть Bravo</span>
+            <span className="caption text-accent">РЎРµС‚СЊ Bravo</span>
             <h1 className="text-[28px] font-bold leading-tight">
-              Наши <span className="font-serif-italic text-accent">филиалы</span>
+              РќР°С€Рё <span className="font-serif-italic text-accent">С„РёР»РёР°Р»С‹</span>
             </h1>
           </div>
         </div>
       </header>
 
-      {/* Yandex map — single iframe with all branches as markers (using URL
+      {/* Yandex map вЂ” single iframe with all branches as markers (using URL
           encoded "text") makes for a zero-key embed. For interactive routes
-          tap the per-branch "Маршрут" button → opens Yandex/Google Maps app. */}
+          tap the per-branch "РњР°СЂС€СЂСѓС‚" button в†’ opens Yandex/Google Maps app. */}
       {branches.length > 0 && (
         <section className="mt-5 px-5">
           <YandexMap
-            query={branches.map((b) => b.address + ", Ташкент").join("~")}
+            query={branches.map((b) => b.address + ", РўР°С€РєРµРЅС‚").join("~")}
           />
         </section>
       )}
 
-      <section className="mt-6 space-y-3 px-5">
+      <section className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 px-5">
         {branches.map((b) => (
           <article
             key={b.id}
@@ -62,7 +62,7 @@ function BranchesPage() {
               <div className="flex items-start justify-between">
                 <h2 className="text-[18px] font-bold">{b.name}</h2>
                 <span className="rounded-pill bg-accent/15 px-2.5 py-1 text-[10px] font-bold text-accent">
-                  {b.distanceKm} км
+                  {b.distanceKm} РєРј
                 </span>
               </div>
               <Info icon={<MapPin />} text={b.address} />
@@ -74,17 +74,17 @@ function BranchesPage() {
               <div className="mt-3 flex gap-2">
                 <a
                   href={`https://yandex.com/maps/?text=${encodeURIComponent(
-                    b.address + ", Ташкент",
+                    b.address + ", РўР°С€РєРµРЅС‚",
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex flex-1 items-center justify-center gap-2 rounded-pill border border-bg-ivory/15 px-4 py-2 text-[13px] font-medium text-bg-ivory active:bg-bg-ivory/10"
                 >
-                  <Navigation className="h-4 w-4" aria-hidden="true" /> Маршрут
+                  <Navigation className="h-4 w-4" aria-hidden="true" /> РњР°СЂС€СЂСѓС‚
                 </a>
                 <Button asChild variant="pill-accent" size="default" className="flex-1">
                   <Link to="/booking" search={{ branch: b.id }}>
-                    Записаться
+                    Р—Р°РїРёСЃР°С‚СЊСЃСЏ
                   </Link>
                 </Button>
               </div>
@@ -109,7 +109,7 @@ function Info({ icon, text }: { icon: React.ReactNode; text: string }) {
 
 /**
  * Embedded Yandex map (no API key needed for the public maps.yandex iframe).
- * `query` is a tilde-separated list of "address, city" strings — Yandex
+ * `query` is a tilde-separated list of "address, city" strings вЂ” Yandex
  * geocodes and shows markers.
  */
 function YandexMap({ query }: { query: string }) {
@@ -119,7 +119,7 @@ function YandexMap({ query }: { query: string }) {
     <div className="overflow-hidden rounded-[24px] border border-bg-ivory/10">
       <iframe
         src={src}
-        title="Карта филиалов Bravo"
+        title="РљР°СЂС‚Р° С„РёР»РёР°Р»РѕРІ Bravo"
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
         className="h-56 w-full"

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { HeroRadial } from "@/components/mini/HeroRadial";
 import { PromoSlider } from "@/components/mini/PromoSlider";
 import { CategoryChips } from "@/components/mini/CategoryChips";
@@ -14,16 +14,16 @@ import { useLocalize } from "@/lib/localize";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Bravo — премиальный барбершоп в Ташкенте" },
+      { title: "Bravo вЂ” РїСЂРµРјРёР°Р»СЊРЅС‹Р№ Р±Р°СЂР±РµСЂС€РѕРї РІ РўР°С€РєРµРЅС‚Рµ" },
       {
         name: "description",
         content:
-          "Онлайн-запись в сеть премиальных барбершопов Bravo: стрижки, борода, бритьё, стайлинг. Бонусная программа до 15%.",
+          "РћРЅР»Р°Р№РЅ-Р·Р°РїРёСЃСЊ РІ СЃРµС‚СЊ РїСЂРµРјРёР°Р»СЊРЅС‹С… Р±Р°СЂР±РµСЂС€РѕРїРѕРІ Bravo: СЃС‚СЂРёР¶РєРё, Р±РѕСЂРѕРґР°, Р±СЂРёС‚СЊС‘, СЃС‚Р°Р№Р»РёРЅРі. Р‘РѕРЅСѓСЃРЅР°СЏ РїСЂРѕРіСЂР°РјРјР° РґРѕ 15%.",
       },
-      { property: "og:title", content: "Bravo — премиальный барбершоп" },
+      { property: "og:title", content: "Bravo вЂ” РїСЂРµРјРёР°Р»СЊРЅС‹Р№ Р±Р°СЂР±РµСЂС€РѕРї" },
       {
         property: "og:description",
-        content: "Онлайн-запись, любимые барберы, кешбэк до 15%.",
+        content: "РћРЅР»Р°Р№РЅ-Р·Р°РїРёСЃСЊ, Р»СЋР±РёРјС‹Рµ Р±Р°СЂР±РµСЂС‹, РєРµС€Р±СЌРє РґРѕ 15%.",
       },
     ],
   }),
@@ -39,7 +39,7 @@ function Home() {
   const showServiceSkeletons = isLoading && topServices.length === 0;
 
   return (
-    <main className="mx-auto min-h-screen max-w-md bg-bg-deep pb-28">
+    <main className="mx-auto min-h-screen max-w-md md:max-w-5xl bg-bg-deep pb-28">
       <HeroRadial />
 
       <div className="space-y-8 pt-8">
@@ -54,7 +54,7 @@ function Home() {
             <Link to="/services" className="caption text-accent">{t("home.all_link")}</Link>
           </div>
           <CategoryChips />
-          <div className="grid grid-cols-2 gap-3 pt-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pt-2">
             {showServiceSkeletons
               ? Array.from({ length: 4 }).map((_, i) => (
                   <div
@@ -103,7 +103,7 @@ function Home() {
                   {L(nearestBranch.name, nearestBranch.nameUz)}
                 </p>
                 <p className="text-[12px] text-bg-ivory/60">
-                  {L(nearestBranch.address, nearestBranch.addressUz)} · {nearestBranch.distanceKm} км
+                  {L(nearestBranch.address, nearestBranch.addressUz)} В· {nearestBranch.distanceKm} РєРј
                 </p>
               </div>
               <span className="caption text-accent">{t("home.route")}</span>

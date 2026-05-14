@@ -15,6 +15,7 @@ import {
   useTelegramBackButton,
 } from "@/lib/telegram-client";
 import { claimReferralFn } from "@/lib/batch2-fn";
+import { TopNav } from "@/components/mini/TopNav";
 
 import appCss from "../styles.css?url";
 
@@ -155,6 +156,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <TopNav />
       <Outlet />
     </QueryClientProvider>
   );

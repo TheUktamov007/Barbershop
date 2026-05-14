@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { BottomNav } from "@/components/mini/BottomNav";
 import { ServiceCard } from "@/components/mini/ServiceCard";
@@ -11,8 +11,8 @@ import { Search, X } from "lucide-react";
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "Услуги — Bravo" },
-      { name: "description", content: "Полный каталог услуг сети барбершопов Bravo." },
+      { title: "РЈСЃР»СѓРіРё вЂ” Bravo" },
+      { name: "description", content: "РџРѕР»РЅС‹Р№ РєР°С‚Р°Р»РѕРі СѓСЃР»СѓРі СЃРµС‚Рё Р±Р°СЂР±РµСЂС€РѕРїРѕРІ Bravo." },
     ],
   }),
   component: ServicesPage,
@@ -39,7 +39,7 @@ function ServicesPage() {
   }, [cat, q, services]);
 
   return (
-    <main className="mx-auto min-h-screen max-w-md bg-bg-deep pb-28 text-bg-ivory">
+    <main className="mx-auto min-h-screen max-w-md md:max-w-5xl bg-bg-deep pb-28 text-bg-ivory">
       <header className="px-5 pt-12 pb-4">
         <span className="caption text-accent">{t("services.catalog")}</span>
         <h1 className="mt-2 text-[36px] font-bold leading-[1.05]">
@@ -56,7 +56,7 @@ function ServicesPage() {
             className="flex-1 bg-transparent text-[14px] outline-none placeholder:text-bg-ivory/40"
           />
           {q && (
-            <button onClick={() => setQ("")} className="text-bg-ivory/50" aria-label="Очистить">
+            <button onClick={() => setQ("")} className="text-bg-ivory/50" aria-label="РћС‡РёСЃС‚РёС‚СЊ">
               <X className="h-4 w-4" />
             </button>
           )}
@@ -85,7 +85,7 @@ function ServicesPage() {
             {t("services.empty")}
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {filtered.map((s) => (
               <Link
                 key={s.id}
@@ -97,7 +97,7 @@ function ServicesPage() {
                   image={s.image}
                   title={L(s.title, s.titleUz)}
                   duration={formatDuration(s.durationMin)}
-                  price={formatSum(s.price).replace(" сум", "")}
+                  price={formatSum(s.price).replace(" СЃСѓРј", "")}
                   category={s.category}
                 />
               </Link>

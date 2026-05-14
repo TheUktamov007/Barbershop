@@ -21,7 +21,7 @@ export function BottomNav() {
         { to: "/branches", label: "Филиалы", icon: MapPin },
       ] as const);
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 safe-bottom px-3 pt-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 safe-bottom px-3 pt-2 md:hidden">
       <div className="mx-auto flex max-w-md items-center justify-between rounded-pill bg-bg-deep/85 backdrop-blur-xl border border-bg-ivory/10 px-3 py-2 shadow-warm-lg">
         {items.map(({ to, label, icon: Icon }) => {
           const active = pathname === to;
