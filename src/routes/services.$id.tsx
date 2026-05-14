@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { BottomNav } from "@/components/mini/BottomNav";
 import { Button } from "@/components/ui/button";
 import { formatDuration, formatSum } from "@/lib/mock";
@@ -10,8 +10,8 @@ import { ArrowLeft, Clock, Star, Scissors } from "lucide-react";
 export const Route = createFileRoute("/services/$id")({
   head: () => ({
     meta: [
-      { title: "РЈСЃР»СѓРіР° вЂ” Bravo" },
-      { name: "description", content: "РЈСЃР»СѓРіР° РІ Р±Р°СЂР±РµСЂС€РѕРїРµ Bravo." },
+      { title: "Услуга — Bravo" },
+      { name: "description", content: "Услуга в барбершопе Bravo." },
     ],
   }),
   component: ServiceDetail,
@@ -25,21 +25,21 @@ function ServiceDetail() {
   if (isLoading && !service) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-bg-deep text-bg-ivory/60">
-        Р—Р°РіСЂСѓР¶Р°РµРјвЂ¦
+        Загружаем…
       </div>
     );
   }
   if (!service) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-bg-deep text-bg-ivory">
-        РЈСЃР»СѓРіР° РЅРµ РЅР°Р№РґРµРЅР°
+        Услуга не найдена
       </div>
     );
   }
   const availableMasters = masters.filter((m) => m.serviceIds.includes(service.id));
 
   return (
-    <main className="mx-auto min-h-screen max-w-md md:max-w-5xl bg-bg-deep pb-32 text-bg-ivory">
+    <main className="mx-auto min-h-screen max-w-md md:max-w-3xl bg-bg-deep pb-32 text-bg-ivory">
       <div className="relative">
         <img
           src={service.image}
@@ -74,7 +74,7 @@ function ServiceDetail() {
 
       <section className="px-5 pt-6">
         <h2 className="text-[14px] font-semibold uppercase tracking-wider text-bg-ivory/60">
-          Р§С‚Рѕ РІС…РѕРґРёС‚
+          Что входит
         </h2>
         <p className="mt-3 text-[15px] leading-relaxed text-bg-ivory/85">
           {service.description}
@@ -84,7 +84,7 @@ function ServiceDetail() {
       <section className="mt-8 px-5">
         <h2 className="flex items-center gap-2 text-[14px] font-semibold uppercase tracking-wider text-bg-ivory/60">
           <Scissors className="h-3.5 w-3.5 text-accent" />
-          Р‘Р°СЂР±РµСЂС‹
+          Барберы
         </h2>
         <div className="mt-3 space-y-2">
           {availableMasters.map((m) => (
@@ -119,7 +119,7 @@ function ServiceDetail() {
       <div className="fixed bottom-24 left-1/2 z-40 w-[calc(100%-2.5rem)] max-w-md -translate-x-1/2 px-5">
         <Button asChild variant="pill-accent" size="lg" className="w-full">
           <Link to="/booking" search={{ service: service.id }}>
-            Р—Р°РїРёСЃР°С‚СЊСЃСЏ В· {formatSum(service.price)}
+            Записаться · {formatSum(service.price)}
           </Link>
         </Button>
       </div>
@@ -136,14 +136,14 @@ function ReviewList({ masterId }: { masterId: string }) {
     <section className="mt-8 px-5 pb-4">
       <h2 className="flex items-center gap-2 text-[14px] font-semibold uppercase tracking-wider text-bg-ivory/60">
         <Star className="h-3.5 w-3.5 text-accent fill-accent" aria-hidden="true" />
-        РћС‚Р·С‹РІС‹ РєР»РёРµРЅС‚РѕРІ
+        Отзывы клиентов
       </h2>
       <div className="mt-3 space-y-2">
         {reviews.map((r) => (
           <div key={r.id} className="rounded-[20px] glass-card p-3">
             <div className="flex items-center justify-between">
               <span className="text-[14px] font-semibold">
-                {r.customerName ?? "Р“РѕСЃС‚СЊ"}
+                {r.customerName ?? "Гость"}
               </span>
               <span className="flex items-center gap-0.5 text-accent">
                 {Array.from({ length: 5 }).map((_, i) => (

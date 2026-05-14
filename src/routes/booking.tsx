@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { BottomNav } from "@/components/mini/BottomNav";
@@ -49,7 +49,7 @@ const searchSchema = z.object({
   time: z.string().optional(),
   lockKey: z.string().optional(),
   promo: z.string().optional(),
-  /** Promo code from profile в†’ pre-fills voucher code field. */
+  /** Promo code from profile → pre-fills voucher code field. */
   promo_code: z.string().optional(),
 });
 
@@ -65,20 +65,20 @@ export const Route = createFileRoute("/booking")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Р—Р°РїРёСЃСЊ вЂ” Bravo" },
-      { name: "description", content: "РћРЅР»Р°Р№РЅ-Р·Р°РїРёСЃСЊ РІ Р±Р°СЂР±РµСЂС€РѕРї Bravo Р·Р° РјРёРЅСѓС‚Сѓ." },
+      { title: "Запись — Bravo" },
+      { name: "description", content: "Онлайн-запись в барбершоп Bravo за минуту." },
     ],
   }),
   component: BookingWizard,
 });
 
 const steps = [
-  "Р¤РёР»РёР°Р»",
-  "РЈСЃР»СѓРіРё",
-  "РњР°СЃС‚РµСЂ",
-  "Р”Р°С‚Р° Рё РІСЂРµРјСЏ",
-  "РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ",
-  "Р“РѕС‚РѕРІРѕ",
+  "Филиал",
+  "Услуги",
+  "Мастер",
+  "Дата и время",
+  "Подтверждение",
+  "Готово",
 ];
 
 function BookingWizard() {
@@ -120,7 +120,7 @@ function BookingWizard() {
           )}
           <div className="flex-1">
             <span className="caption text-accent">
-              РЁР°Рі {Math.min(step, 5)} РёР· 5
+              Шаг {Math.min(step, 5)} из 5
             </span>
             <h1 className="text-[20px] font-bold">{steps[step - 1]}</h1>
           </div>
@@ -239,7 +239,7 @@ function BranchStep({
             </p>
             <p className="text-[12px] text-bg-ivory/60">{b.hours}</p>
           </div>
-          <span className="caption text-accent">{b.distanceKm} РєРј</span>
+          <span className="caption text-accent">{b.distanceKm} км</span>
         </button>
       ))}
     </div>
@@ -273,7 +273,7 @@ function ServiceStep({
   return (
     <div className="space-y-4">
       <p className="text-[13px] text-bg-ivory/60">
-        РњРѕР¶РЅРѕ РІС‹Р±СЂР°С‚СЊ РЅРµСЃРєРѕР»СЊРєРѕ СѓСЃР»СѓРі вЂ” РјР°СЃС‚РµСЂ РІС‹РїРѕР»РЅРёС‚ РёС… РїРѕРґСЂСЏРґ.
+        Можно выбрать несколько услуг — мастер выполнит их подряд.
       </p>
 
       <div className="grid grid-cols-2 gap-3">
@@ -308,7 +308,7 @@ function ServiceStep({
                 <div className="mt-1 flex items-center justify-between text-[11px] text-bg-ivory/60">
                   <span>{formatDuration(s.durationMin)}</span>
                   <span className="font-semibold text-accent">
-                    {formatSum(s.price).replace(" СЃСѓРј", "")}
+                    {formatSum(s.price).replace(" сум", "")}
                   </span>
                 </div>
               </div>
@@ -322,8 +322,8 @@ function ServiceStep({
           <div className="mb-2 flex items-center justify-between text-[13px]">
             <span className="text-bg-ivory/60">
               {picked.length === 0
-                ? "РќРµ РІС‹Р±СЂР°РЅРѕ"
-                : `Р’С‹Р±СЂР°РЅРѕ: ${picked.length} В· ${formatDuration(total.dur)}`}
+                ? "Не выбрано"
+                : `Выбрано: ${picked.length} · ${formatDuration(total.dur)}`}
             </span>
             <span className="font-bold text-accent">{formatSum(total.price)}</span>
           </div>
@@ -334,7 +334,7 @@ function ServiceStep({
             disabled={picked.length === 0}
             onClick={() => onContinue(picked)}
           >
-            РџСЂРѕРґРѕР»Р¶РёС‚СЊ{picked.length > 0 ? ` (${picked.length})` : ""}
+            Продолжить{picked.length > 0 ? ` (${picked.length})` : ""}
           </Button>
         </div>
       </div>
@@ -383,9 +383,9 @@ function MasterStep({
           <Sparkles className="h-5 w-5" strokeWidth={1.6} />
         </div>
         <div className="flex-1">
-          <p className="text-[15px] font-semibold">Р›СЋР±РѕР№ СЃРІРѕР±РѕРґРЅС‹Р№ РјР°СЃС‚РµСЂ</p>
+          <p className="text-[15px] font-semibold">Любой свободный мастер</p>
           <p className="text-[12px] text-bg-ivory/60">
-            РџРѕРґР±РµСЂС‘Рј РїРѕ РІСЂРµРјРµРЅРё Рё СѓСЃР»СѓРіРµ
+            Подберём по времени и услуге
           </p>
         </div>
       </button>
@@ -416,7 +416,7 @@ function MasterStep({
                 <p className="text-[12px] text-bg-ivory/60">{m.role}</p>
               </div>
               <span className="text-[13px] font-semibold text-accent">
-                в… {m.rating}
+                ★ {m.rating}
               </span>
             </button>
             <button
@@ -426,12 +426,12 @@ function MasterStep({
                 haptic("select");
                 toggleFavMut.mutate(m.id);
               }}
-              aria-label={isFav ? "РЈР±СЂР°С‚СЊ РёР· РёР·Р±СЂР°РЅРЅРѕРіРѕ" : "Р’ РёР·Р±СЂР°РЅРЅРѕРµ"}
+              aria-label={isFav ? "Убрать из избранного" : "В избранное"}
               className={`flex h-9 w-9 items-center justify-center rounded-pill transition-colors ${
                 isFav ? "bg-accent/20 text-accent" : "bg-bg-ivory/10 text-bg-ivory/60"
               }`}
             >
-              в™Ґ
+              ♥
             </button>
           </div>
         );
@@ -504,7 +504,7 @@ function DateTimeStep({
     );
     if (!res.ok) {
       haptic("error");
-      setError("Р­С‚РѕС‚ СЃР»РѕС‚ С‚РѕР»СЊРєРѕ С‡С‚Рѕ Р·Р°РЅСЏР»Рё. Р’С‹Р±РµСЂРёС‚Рµ РґСЂСѓРіРѕР№.");
+      setError("Этот слот только что заняли. Выберите другой.");
       return;
     }
     haptic("select");
@@ -526,7 +526,7 @@ function DateTimeStep({
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="caption text-bg-ivory/60">Р”Р°С‚Р°</h3>
+        <h3 className="caption text-bg-ivory/60">Дата</h3>
         <div className="-mx-5 mt-3 flex gap-2 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {days.map((d) => (
             <button
@@ -552,11 +552,11 @@ function DateTimeStep({
 
       <div>
         <div className="flex items-center justify-between">
-          <h3 className="caption text-bg-ivory/60">Р’СЂРµРјСЏ</h3>
+          <h3 className="caption text-bg-ivory/60">Время</h3>
           {myMsLeft !== undefined && (
             <span className="inline-flex items-center gap-1 rounded-pill bg-accent/15 px-2.5 py-1 text-[11px] font-semibold text-accent">
               <Timer className="h-3 w-3" />
-              РЈРґРµСЂР¶Р°РЅРёРµ {formatCountdown(myMsLeft)}
+              Удержание {formatCountdown(myMsLeft)}
             </span>
           )}
         </div>
@@ -584,9 +584,9 @@ function DateTimeStep({
                 onClick={() => handlePickTime(s.time)}
                 title={
                   s.status === "locked"
-                    ? "РЎРµР№С‡Р°СЃ Р±СЂРѕРЅРёСЂСѓРµС‚СЃСЏ РґСЂСѓРіРёРј РєР»РёРµРЅС‚РѕРј"
+                    ? "Сейчас бронируется другим клиентом"
                     : s.status === "booked"
-                      ? "РЈР¶Рµ Р·Р°РЅСЏС‚Рѕ"
+                      ? "Уже занято"
                       : ""
                 }
                 className={`relative rounded-[14px] py-2.5 text-[13px] font-semibold transition-all ${cls}`}
@@ -601,10 +601,10 @@ function DateTimeStep({
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-bg-ivory/55">
-          <Legend dot="bg-accent" label="РІР°С€ РІС‹Р±РѕСЂ" />
-          <Legend dot="bg-bg-ivory/30" label="СЃРІРѕР±РѕРґРЅРѕ" />
-          <Legend dot="bg-amber-500/60" label="Р±СЂРѕРЅРёСЂСѓРµС‚СЃСЏ" />
-          <Legend dot="bg-bg-ivory/15" label="Р·Р°РЅСЏС‚Рѕ" />
+          <Legend dot="bg-accent" label="ваш выбор" />
+          <Legend dot="bg-bg-ivory/30" label="свободно" />
+          <Legend dot="bg-amber-500/60" label="бронируется" />
+          <Legend dot="bg-bg-ivory/15" label="занято" />
         </div>
 
         {error && (
@@ -621,7 +621,7 @@ function DateTimeStep({
         disabled={!pickedTime || !activeLock}
         onClick={() => activeLock && onPick(pickedDate, pickedTime, activeLock)}
       >
-        РџСЂРѕРґРѕР»Р¶РёС‚СЊ
+        Продолжить
       </Button>
     </div>
   );
@@ -677,7 +677,7 @@ function ConfirmStep({
   const [phone, setPhone] = useState<string>("");
   const [guestName, setGuestName] = useState<string>("");
   const [certCode, setCertCode] = useState(initialPromoCode ?? "");
-  // If user came in via "РџСЂРёРјРµРЅРёС‚СЊ РїСЂРѕРјРѕРєРѕРґ" from profile, try the code on mount.
+  // If user came in via "Применить промокод" from profile, try the code on mount.
   const lookupCertMutLocal = useLookupCert();
   useEffect(() => {
     if (!initialPromoCode) return;
@@ -753,11 +753,11 @@ function ConfirmStep({
     const trimmedPhone = phone.trim();
     const trimmedName = guestName.trim();
 
-    // Guest path: no Telegram в†’ require name + phone
+    // Guest path: no Telegram → require name + phone
     if (!inTg) {
       if (!trimmedName || !trimmedPhone) {
         haptic("error");
-        const msg = "Р’РІРµРґРёС‚Рµ РёРјСЏ Рё РЅРѕРјРµСЂ С‚РµР»РµС„РѕРЅР°";
+        const msg = "Введите имя и номер телефона";
         if (typeof window !== "undefined") window.alert(msg);
         return;
       }
@@ -768,7 +768,7 @@ function ConfirmStep({
           serviceTitle: title,
           serviceIds: services.map((s) => s.id),
           masterId: master?.id,
-          masterName: master?.name ?? "Р›СЋР±РѕР№ СЃРІРѕР±РѕРґРЅС‹Р№",
+          masterName: master?.name ?? "Любой свободный",
           branchId: branch!.id,
           branchName: branch!.name,
           startAt: `${date}T${time}:00`,
@@ -777,7 +777,7 @@ function ConfirmStep({
           promoId: promoEligible ? promoId : undefined,
         });
         if (!res.ok) {
-          const msg = res.error ?? "РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ Р·Р°РїРёСЃСЊ. РџРѕРїСЂРѕР±СѓР№С‚Рµ РµС‰С‘ СЂР°Р·.";
+          const msg = res.error ?? "Не удалось создать запись. Попробуйте ещё раз.";
           if (typeof window !== "undefined") window.alert(msg);
           onSlotLost();
           return;
@@ -785,7 +785,7 @@ function ConfirmStep({
       } catch (e) {
         console.warn("[guest-booking] create threw:", e);
         if (typeof window !== "undefined")
-          window.alert("РћС€РёР±РєР° СЃРµС‚Рё. РџРѕРїСЂРѕР±СѓР№С‚Рµ РµС‰С‘ СЂР°Р·.");
+          window.alert("Ошибка сети. Попробуйте ещё раз.");
         return;
       }
       onConfirm();
@@ -806,7 +806,7 @@ function ConfirmStep({
         serviceTitle: title,
         serviceIds: services.map((s) => s.id),
         masterId: master?.id,
-        masterName: master?.name ?? "Р›СЋР±РѕР№ СЃРІРѕР±РѕРґРЅС‹Р№",
+        masterName: master?.name ?? "Любой свободный",
         branchId: branch!.id,
         branchName: branch!.name,
         startAt: `${date}T${time}:00`,
@@ -822,7 +822,7 @@ function ConfirmStep({
         const tg = getTelegramWebApp() as unknown as {
           showAlert?: (m: string) => void;
         };
-        const msg = res.error ?? "РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ Р·Р°РїРёСЃСЊ. РџРѕРїСЂРѕР±СѓР№С‚Рµ РµС‰С‘ СЂР°Р·.";
+        const msg = res.error ?? "Не удалось создать запись. Попробуйте ещё раз.";
         if (tg?.showAlert) tg.showAlert(msg);
         else if (typeof window !== "undefined") window.alert(msg);
         onSlotLost();
@@ -839,7 +839,7 @@ function ConfirmStep({
   if (!dataReady) {
     return (
       <p className="text-[14px] text-bg-ivory/60">
-        РќРµ С…РІР°С‚Р°РµС‚ РґР°РЅРЅС‹С…. Р’РµСЂРЅРёС‚РµСЃСЊ Рё Р·Р°РїРѕР»РЅРёС‚Рµ РІСЃРµ С€Р°РіРё.
+        Не хватает данных. Вернитесь и заполните все шаги.
       </p>
     );
   }
@@ -855,7 +855,7 @@ function ConfirmStep({
       <div className="rounded-[24px] glass-card p-4 space-y-3">
         <div>
           <p className="text-[11px] uppercase tracking-wider text-bg-ivory/50 mb-2">
-            РЈСЃР»СѓРіРё ({services.length}) В· {formatDuration(totalDuration)}
+            Услуги ({services.length}) · {formatDuration(totalDuration)}
           </p>
           <div className="space-y-1.5">
             {services.map((s) => (
@@ -867,20 +867,20 @@ function ConfirmStep({
           </div>
         </div>
         <div className="h-px bg-bg-ivory/10" />
-        <Row icon={<MapPin />} label="Р¤РёР»РёР°Р»" value={branch.name} sub={branch.address} />
+        <Row icon={<MapPin />} label="Филиал" value={branch.name} sub={branch.address} />
         <Row
           icon={<Sparkles />}
-          label="РњР°СЃС‚РµСЂ"
-          value={master?.name ?? "Р›СЋР±РѕР№ СЃРІРѕР±РѕРґРЅС‹Р№"}
+          label="Мастер"
+          value={master?.name ?? "Любой свободный"}
         />
-        <Row icon={<CalendarDays />} label="РљРѕРіРґР°" value={formattedDate} sub={time} />
+        <Row icon={<CalendarDays />} label="Когда" value={formattedDate} sub={time} />
       </div>
 
       <div className={`flex items-center gap-2 rounded-[16px] px-3 py-2 text-[12px] ${stillHolds ? "bg-accent/10 text-accent" : "bg-red-500/10 text-red-300"}`}>
         <Timer className="h-3.5 w-3.5" aria-hidden="true" />
         {stillHolds
-          ? `РЎР»РѕС‚ СѓРґРµСЂР¶РёРІР°РµС‚СЃСЏ Р·Р° РІР°РјРё РґРѕ ${Math.ceil(LOCK_TTL_MS / 60000)} РјРёРЅСѓС‚ вЂ” РїРѕРґС‚РІРµСЂРґРёС‚Рµ Р·Р°РїРёСЃСЊ.`
-          : "Р’СЂРµРјСЏ СѓРґРµСЂР¶Р°РЅРёСЏ СЃР»РѕС‚Р° РёСЃС‚РµРєР»Рѕ. Р’С‹Р±РµСЂРёС‚Рµ РІСЂРµРјСЏ Р·Р°РЅРѕРІРѕ."}
+          ? `Слот удерживается за вами до ${Math.ceil(LOCK_TTL_MS / 60000)} минут — подтвердите запись.`
+          : "Время удержания слота истекло. Выберите время заново."}
       </div>
 
       {/* Guest mode: ask for name (TG users already have first_name). */}
@@ -888,13 +888,13 @@ function ConfirmStep({
         <div className="rounded-[20px] bg-bg-ivory/5 p-4">
           <label className="block">
             <span className="text-[11px] uppercase tracking-wider text-bg-ivory/50">
-              Р’Р°С€Рµ РёРјСЏ *
+              Ваше имя *
             </span>
             <input
               type="text"
               value={guestName}
               onChange={(e) => setGuestName(e.target.value)}
-              placeholder="РќР°РїСЂРёРјРµСЂ: РўРёРјСѓСЂ"
+              placeholder="Например: Тимур"
               className="mt-1 w-full bg-transparent text-[15px] text-bg-ivory outline-none placeholder:text-bg-ivory/30"
               autoComplete="name"
             />
@@ -902,11 +902,11 @@ function ConfirmStep({
         </div>
       )}
 
-      {/* Phone field вЂ” required for callback. */}
+      {/* Phone field — required for callback. */}
       <div className="rounded-[20px] bg-bg-ivory/5 p-4">
         <label className="block">
           <span className="text-[11px] uppercase tracking-wider text-bg-ivory/50">
-            РќРѕРјРµСЂ С‚РµР»РµС„РѕРЅР° {!inTg && "*"}
+            Номер телефона {!inTg && "*"}
           </span>
           <input
             type="tel"
@@ -920,10 +920,10 @@ function ConfirmStep({
         </label>
         <p className="mt-1 text-[11px] text-bg-ivory/50">
           {!inTg
-            ? "Р‘Р°СЂР±РµСЂС€РѕРї СЃРІСЏР¶РµС‚СЃСЏ СЃ РІР°РјРё РґР»СЏ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ."
+            ? "Барбершоп свяжется с вами для подтверждения."
             : phoneSaved
-              ? "РЎРѕС…СЂР°РЅС‘РЅ РІ РїСЂРѕС„РёР»Рµ. РњРѕР¶РЅРѕ РёР·РјРµРЅРёС‚СЊ."
-              : "РЎРѕС…СЂР°РЅРёРј РІ РїСЂРѕС„РёР»Рµ РґР»СЏ Р±СѓРґСѓС‰РёС… Р·Р°РїРёСЃРµР№. РќР° РЅРµРіРѕ РїРѕР·РІРѕРЅРёС‚ Р±Р°СЂР±РµСЂС€РѕРї РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё."}
+              ? "Сохранён в профиле. Можно изменить."
+              : "Сохраним в профиле для будущих записей. На него позвонит барбершоп при необходимости."}
         </p>
       </div>
 
@@ -931,7 +931,7 @@ function ConfirmStep({
       {inTg && eligiblePkgs.length > 0 && (
         <div className="rounded-[20px] bg-bg-ivory/5 p-4 space-y-2">
           <p className="text-[11px] uppercase tracking-wider text-bg-ivory/50">
-            РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р°Р±РѕРЅРµРјРµРЅС‚
+            Использовать абонемент
           </p>
           <div className="space-y-1.5">
             {eligiblePkgs.map((p) => {
@@ -954,11 +954,11 @@ function ConfirmStep({
                   <div>
                     <p className="text-[13px] font-semibold">{p.title}</p>
                     <p className="text-[11px] text-bg-ivory/60">
-                      РћСЃС‚Р°Р»РѕСЃСЊ {left} РІРёР·РёС‚РѕРІ
+                      Осталось {left} визитов
                     </p>
                   </div>
                   <span className={`text-[18px] ${selected ? "text-accent" : "text-bg-ivory/30"}`}>
-                    {selected ? "в—Џ" : "в—‹"}
+                    {selected ? "●" : "○"}
                   </span>
                 </button>
               );
@@ -966,27 +966,27 @@ function ConfirmStep({
           </div>
           {packageId && (
             <p className="text-[11px] text-accent">
-              вњ“ РћРґРёРЅ РІРёР·РёС‚ СЃРїРёС€РµС‚СЃСЏ СЃ Р°Р±РѕРЅРµРјРµРЅС‚Р°. РЎС‚РѕРёРјРѕСЃС‚СЊ = 0 СЃСѓРј.
+              ✓ Один визит спишется с абонемента. Стоимость = 0 сум.
             </p>
           )}
         </div>
       )}
 
-      {/* Certificate code entry вЂ” only in Telegram (cert is bound to a TG user) */}
+      {/* Certificate code entry — only in Telegram (cert is bound to a TG user) */}
       {inTg && !packageId && (
         <div className="rounded-[20px] bg-bg-ivory/5 p-4 space-y-2">
           <p className="text-[11px] uppercase tracking-wider text-bg-ivory/50">
-            Р’Р°СѓС‡РµСЂ
+            Ваучер
           </p>
           {appliedCert ? (
             <div className="flex items-center justify-between rounded-[12px] bg-accent/10 p-3">
               <div>
                 <p className="text-[13px] font-semibold text-accent">
-                  вњ“ {appliedCert.code}
+                  ✓ {appliedCert.code}
                 </p>
                 <p className="text-[11px] text-bg-ivory/60">
-                  Р‘Р°Р»Р°РЅСЃ: {appliedCert.balance.toLocaleString("ru-RU")} СЃСѓРј. Рљ СЃРїРёСЃР°РЅРёСЋ:{" "}
-                  {certApply.toLocaleString("ru-RU")} СЃСѓРј.
+                  Баланс: {appliedCert.balance.toLocaleString("ru-RU")} сум. К списанию:{" "}
+                  {certApply.toLocaleString("ru-RU")} сум.
                 </p>
               </div>
               <button
@@ -997,7 +997,7 @@ function ConfirmStep({
                 }}
                 className="rounded-pill bg-bg-ivory/10 px-2.5 py-1 text-[11px] text-bg-ivory hover:bg-bg-ivory/15"
               >
-                РЈР±СЂР°С‚СЊ
+                Убрать
               </button>
             </div>
           ) : (
@@ -1026,14 +1026,14 @@ function ConfirmStep({
                       setCertError(null);
                       haptic("success");
                     } else {
-                      setCertError(r.error ?? "РќРµ РЅР°Р№РґРµРЅРѕ");
+                      setCertError(r.error ?? "Не найдено");
                       haptic("error");
                     }
                   }}
                   disabled={lookupCertMut.isPending}
                   className="rounded-pill bg-accent px-4 py-2 text-[13px] font-semibold text-accent-foreground active:opacity-90 disabled:opacity-50"
                 >
-                  {lookupCertMut.isPending ? "..." : "РџСЂРёРјРµРЅРёС‚СЊ"}
+                  {lookupCertMut.isPending ? "..." : "Применить"}
                 </button>
               </div>
               {(myCerts ?? []).length > 0 && (
@@ -1076,11 +1076,11 @@ function ConfirmStep({
         >
           <div>
             <p className="text-[14px] font-semibold">
-              РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р±РѕРЅСѓСЃС‹{useBonus ? "" : "?"}
+              Использовать бонусы{useBonus ? "" : "?"}
             </p>
             <p className="mt-0.5 text-[12px] text-bg-ivory/60">
-              Р”РѕСЃС‚СѓРїРЅРѕ: {availableBonus.toLocaleString("ru-RU")} В· РјР°РєСЃРёРјСѓРј{" "}
-              {maxBonusApply.toLocaleString("ru-RU")} Рє СЌС‚РѕР№ Р·Р°РїРёСЃРё
+              Доступно: {availableBonus.toLocaleString("ru-RU")} · максимум{" "}
+              {maxBonusApply.toLocaleString("ru-RU")} к этой записи
             </p>
           </div>
           <span
@@ -1100,46 +1100,46 @@ function ConfirmStep({
 
       <div className="rounded-[24px] bg-bg-ivory/5 p-4">
         <div className="flex items-center justify-between text-[14px] text-bg-ivory/70">
-          <span>РЎС‚РѕРёРјРѕСЃС‚СЊ ({services.length} {services.length === 1 ? "СѓСЃР»СѓРіР°" : "СѓСЃР»СѓРі"})</span>
+          <span>Стоимость ({services.length} {services.length === 1 ? "услуга" : "услуг"})</span>
           <span>{formatSum(totalPrice)}</span>
         </div>
         {promoEligible && promoDiscount > 0 && (
           <div className="mt-1 flex items-center justify-between text-[14px] text-accent">
-            <span className="inline-flex items-center gap-1.5"><Gift className="h-3.5 w-3.5" strokeWidth={1.8} />РђРєС†РёСЏ В«{promo!.title}В» в€’{promo!.discountPct}%</span>
-            <span>в€’{promoDiscount.toLocaleString("ru-RU")}</span>
+            <span className="inline-flex items-center gap-1.5"><Gift className="h-3.5 w-3.5" strokeWidth={1.8} />Акция «{promo!.title}» −{promo!.discountPct}%</span>
+            <span>−{promoDiscount.toLocaleString("ru-RU")}</span>
           </div>
         )}
         {bonusToApply > 0 && (
           <div className="mt-1 flex items-center justify-between text-[14px] text-accent">
-            <span>Р‘РѕРЅСѓСЃР°РјРё</span>
-            <span>в€’{bonusToApply.toLocaleString("ru-RU")}</span>
+            <span>Бонусами</span>
+            <span>−{bonusToApply.toLocaleString("ru-RU")}</span>
           </div>
         )}
         {certApply > 0 && !selectedPkg && (
           <div className="mt-1 flex items-center justify-between text-[14px] text-accent">
-            <span>Р’Р°СѓС‡РµСЂРѕРј</span>
-            <span>в€’{certApply.toLocaleString("ru-RU")}</span>
+            <span>Ваучером</span>
+            <span>−{certApply.toLocaleString("ru-RU")}</span>
           </div>
         )}
         {selectedPkg && (
           <div className="mt-1 flex items-center justify-between text-[14px] text-accent">
-            <span>РђР±РѕРЅРµРјРµРЅС‚</span>
-            <span>в€’{totalPrice.toLocaleString("ru-RU")} (1 РІРёР·РёС‚)</span>
+            <span>Абонемент</span>
+            <span>−{totalPrice.toLocaleString("ru-RU")} (1 визит)</span>
           </div>
         )}
         <div className="mt-2 flex items-center justify-between text-[18px] font-bold">
-          <span>РС‚РѕРіРѕ</span>
+          <span>Итого</span>
           <span className="text-accent">{formatSum(finalPrice)}</span>
         </div>
         <p className="mt-2 text-[11px] text-bg-ivory/50">
-          РћРїР»Р°С‚Р° РІ Р±Р°СЂР±РµСЂС€РѕРїРµ. РћС‚РјРµРЅР° Р±РµСЃРїР»Р°С‚РЅР° Р·Р° 24 С‡Р°СЃР°.
+          Оплата в барбершопе. Отмена бесплатна за 24 часа.
         </p>
       </div>
 
       {stillHolds ? (
         <div className="space-y-2">
           <Button variant="pill-accent" size="lg" className="w-full" onClick={handle}>
-            РџРѕРґС‚РІРµСЂРґРёС‚СЊ Р·Р°РїРёСЃСЊ
+            Подтвердить запись
           </Button>
           <Button
             variant="pill-outline"
@@ -1150,12 +1150,12 @@ function ConfirmStep({
               onSlotLost();
             }}
           >
-            РћС‚РјРµРЅРёС‚СЊ Рё РІС‹Р±СЂР°С‚СЊ РґСЂСѓРіРѕРµ РІСЂРµРјСЏ
+            Отменить и выбрать другое время
           </Button>
         </div>
       ) : (
         <Button variant="pill-accent" size="lg" className="w-full" onClick={onSlotLost}>
-          Р’С‹Р±СЂР°С‚СЊ РґСЂСѓРіРѕРµ РІСЂРµРјСЏ
+          Выбрать другое время
         </Button>
       )}
     </div>
@@ -1215,27 +1215,27 @@ function SuccessStep({
       </div>
 
       <h2 className="mt-6 text-[28px] font-bold leading-tight">
-        Р—Р°РїРёСЃСЊ <span className="font-serif-italic text-accent">РїСЂРёРЅСЏС‚Р°</span>
+        Запись <span className="font-serif-italic text-accent">принята</span>
       </h2>
       <p className="mt-2 max-w-xs text-[14px] text-bg-ivory/70">
-        РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ Рё РЅР°РїРѕРјРёРЅР°РЅРёРµ РїСЂРёРґСѓС‚ РІ Telegram. Р‘СѓРґРµРј Р¶РґР°С‚СЊ!
+        Подтверждение и напоминание придут в Telegram. Будем ждать!
       </p>
 
       {services.length > 0 && branch && date && time && (
         <div className="mt-6 w-full rounded-[24px] glass-card p-4 text-left">
           <p className="text-[15px] font-semibold">{summary}</p>
           <p className="mt-1 text-[12px] text-bg-ivory/60">
-            {branch.name} В· {new Date(date).toLocaleDateString("ru-RU", { day: "numeric", month: "long" })} РІ {time}
+            {branch.name} · {new Date(date).toLocaleDateString("ru-RU", { day: "numeric", month: "long" })} в {time}
           </p>
         </div>
       )}
 
       <div className="mt-6 flex w-full gap-2">
         <Button asChild variant="pill-outline" size="lg" className="flex-1">
-          <Link to="/profile">РњРѕРё Р·Р°РїРёСЃРё</Link>
+          <Link to="/profile">Мои записи</Link>
         </Button>
         <Button asChild variant="pill-accent" size="lg" className="flex-1">
-          <Link to="/">РќР° РіР»Р°РІРЅСѓСЋ</Link>
+          <Link to="/">На главную</Link>
         </Button>
       </div>
     </div>

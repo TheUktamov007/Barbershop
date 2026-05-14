@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { HeroRadial } from "@/components/mini/HeroRadial";
 import { PromoSlider } from "@/components/mini/PromoSlider";
 import { CategoryChips } from "@/components/mini/CategoryChips";
@@ -14,16 +14,16 @@ import { useLocalize } from "@/lib/localize";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Bravo вЂ” РїСЂРµРјРёР°Р»СЊРЅС‹Р№ Р±Р°СЂР±РµСЂС€РѕРї РІ РўР°С€РєРµРЅС‚Рµ" },
+      { title: "Bravo — премиальный барбершоп в Ташкенте" },
       {
         name: "description",
         content:
-          "РћРЅР»Р°Р№РЅ-Р·Р°РїРёСЃСЊ РІ СЃРµС‚СЊ РїСЂРµРјРёР°Р»СЊРЅС‹С… Р±Р°СЂР±РµСЂС€РѕРїРѕРІ Bravo: СЃС‚СЂРёР¶РєРё, Р±РѕСЂРѕРґР°, Р±СЂРёС‚СЊС‘, СЃС‚Р°Р№Р»РёРЅРі. Р‘РѕРЅСѓСЃРЅР°СЏ РїСЂРѕРіСЂР°РјРјР° РґРѕ 15%.",
+          "Онлайн-запись в сеть премиальных барбершопов Bravo: стрижки, борода, бритьё, стайлинг. Бонусная программа до 15%.",
       },
-      { property: "og:title", content: "Bravo вЂ” РїСЂРµРјРёР°Р»СЊРЅС‹Р№ Р±Р°СЂР±РµСЂС€РѕРї" },
+      { property: "og:title", content: "Bravo — премиальный барбершоп" },
       {
         property: "og:description",
-        content: "РћРЅР»Р°Р№РЅ-Р·Р°РїРёСЃСЊ, Р»СЋР±РёРјС‹Рµ Р±Р°СЂР±РµСЂС‹, РєРµС€Р±СЌРє РґРѕ 15%.",
+        content: "Онлайн-запись, любимые барберы, кешбэк до 15%.",
       },
     ],
   }),
@@ -103,7 +103,7 @@ function Home() {
                   {L(nearestBranch.name, nearestBranch.nameUz)}
                 </p>
                 <p className="text-[12px] text-bg-ivory/60">
-                  {L(nearestBranch.address, nearestBranch.addressUz)} В· {nearestBranch.distanceKm} РєРј
+                  {L(nearestBranch.address, nearestBranch.addressUz)} · {nearestBranch.distanceKm} км
                 </p>
               </div>
               <span className="caption text-accent">{t("home.route")}</span>

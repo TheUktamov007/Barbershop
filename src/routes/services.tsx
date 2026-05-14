@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { BottomNav } from "@/components/mini/BottomNav";
 import { ServiceCard } from "@/components/mini/ServiceCard";
@@ -11,8 +11,8 @@ import { Search, X } from "lucide-react";
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "РЈСЃР»СѓРіРё вЂ” Bravo" },
-      { name: "description", content: "РџРѕР»РЅС‹Р№ РєР°С‚Р°Р»РѕРі СѓСЃР»СѓРі СЃРµС‚Рё Р±Р°СЂР±РµСЂС€РѕРїРѕРІ Bravo." },
+      { title: "Услуги — Bravo" },
+      { name: "description", content: "Полный каталог услуг сети барбершопов Bravo." },
     ],
   }),
   component: ServicesPage,
@@ -56,7 +56,7 @@ function ServicesPage() {
             className="flex-1 bg-transparent text-[14px] outline-none placeholder:text-bg-ivory/40"
           />
           {q && (
-            <button onClick={() => setQ("")} className="text-bg-ivory/50" aria-label="РћС‡РёСЃС‚РёС‚СЊ">
+            <button onClick={() => setQ("")} className="text-bg-ivory/50" aria-label="Очистить">
               <X className="h-4 w-4" />
             </button>
           )}
@@ -97,7 +97,7 @@ function ServicesPage() {
                   image={s.image}
                   title={L(s.title, s.titleUz)}
                   duration={formatDuration(s.durationMin)}
-                  price={formatSum(s.price).replace(" СЃСѓРј", "")}
+                  price={formatSum(s.price).replace(" сум", "")}
                   category={s.category}
                 />
               </Link>

@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { BottomNav } from "@/components/mini/BottomNav";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/lib/store";
@@ -8,15 +8,15 @@ import { ArrowLeft } from "lucide-react";
 export const Route = createFileRoute("/promos")({
   head: () => ({
     meta: [
-      { title: "РђРєС†РёРё вЂ” Bravo" },
-      { name: "description", content: "Р”РµР№СЃС‚РІСѓСЋС‰РёРµ Р°РєС†РёРё Рё СЃРїРµС†РїСЂРµРґР»РѕР¶РµРЅРёСЏ Bravo Barbershop." },
+      { title: "Акции — Bravo" },
+      { name: "description", content: "Действующие акции и спецпредложения Bravo Barbershop." },
     ],
   }),
   component: PromosPage,
 });
 
 /**
- * Map a promo to a list of service ids by keyword. Lets "Р’РѕСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ"
+ * Map a promo to a list of service ids by keyword. Lets "Воспользоваться"
  * pre-fill the booking flow with the relevant service instead of dropping
  * the user into a blank catalog.
  */
@@ -33,13 +33,13 @@ function inferServiceIds(
       // Pick services whose title or category appears in the promo text.
       return (
         text.includes(t) ||
-        (cat === "haircut" && /СЃС‚СЂРёР¶Рє|С„РµР№Рґ|Р°РЅРґРµСЂРєР°С‚/.test(text)) ||
-        (cat === "beard" && /Р±РѕСЂРѕРґ|РјРѕРґРµР»РёСЂРѕРІР°РЅ/.test(text)) ||
-        (cat === "shave" && /Р±СЂРёС‚СЊС‘|Р±СЂРёС‚СЊРµ|РѕРїР°СЃРЅ/.test(text)) ||
-        (cat === "kids" && /РґРµС‚СЃРє|РјР°Р»С‹С€/.test(text)) ||
-        (cat === "coloring" && /РєР°РјСѓС„Р»СЏР¶|РѕРєСЂР°С€РёРІР°РЅ|СЃРµРґРёРЅ/.test(text)) ||
-        (cat === "styling" && /СѓРєР»Р°РґРє|СЃС‚Р°Р№Р»РёРЅРі|С„РёРЅРёС€/.test(text)) ||
-        (cat === "combo" && /РєРѕРјР±Рѕ|СЃС‚СЂРёР¶Рє.*Р±РѕСЂРѕРґ/.test(text))
+        (cat === "haircut" && /стрижк|фейд|андеркат/.test(text)) ||
+        (cat === "beard" && /бород|моделирован/.test(text)) ||
+        (cat === "shave" && /бритьё|бритье|опасн/.test(text)) ||
+        (cat === "kids" && /детск|малыш/.test(text)) ||
+        (cat === "coloring" && /камуфляж|окрашиван|седин/.test(text)) ||
+        (cat === "styling" && /укладк|стайлинг|финиш/.test(text)) ||
+        (cat === "combo" && /комбо|стрижк.*бород/.test(text))
       );
     })
     .map((s) => s.id);
@@ -60,9 +60,9 @@ function PromosPage() {
             <ArrowLeft className="h-5 w-5" strokeWidth={1.7} />
           </Link>
           <div>
-            <span className="caption text-accent">РЎРµР№С‡Р°СЃ</span>
+            <span className="caption text-accent">Сейчас</span>
             <h1 className="text-[28px] font-bold leading-tight">
-              РђРєС‚СѓР°Р»СЊРЅС‹Рµ <span className="font-serif-italic text-accent">Р°РєС†РёРё</span>
+              Актуальные <span className="font-serif-italic text-accent">акции</span>
             </h1>
           </div>
         </div>
@@ -105,12 +105,12 @@ function PromosPage() {
                   <>
                     {p.discountPct > 0 && (
                       <div className="rounded-pill bg-accent/15 px-3 py-1.5 text-center text-[12px] font-semibold text-accent">
-                        вњ“ РЎРєРёРґРєР° {p.discountPct}% РїСЂРёРјРµРЅРёС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё
+                        ✓ Скидка {p.discountPct}% применится автоматически
                       </div>
                     )}
                     <Button asChild variant="pill-accent" size="default" className="mt-2 w-full">
                       <Link to="/booking" search={search}>
-                        Р’РѕСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ
+                        Воспользоваться
                       </Link>
                     </Button>
                   </>

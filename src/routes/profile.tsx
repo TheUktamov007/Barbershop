@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { BottomNav } from "@/components/mini/BottomNav";
 import { myPromoCodes, formatSum } from "@/lib/mock";
 import {
@@ -60,8 +60,8 @@ import {
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "РџСЂРѕС„РёР»СЊ вЂ” Bravo" },
-      { name: "description", content: "Р›РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚, Р±РѕРЅСѓСЃС‹, РјРѕРё Р·Р°РїРёСЃРё." },
+      { title: "Профиль — Bravo" },
+      { name: "description", content: "Личный кабинет, бонусы, мои записи." },
     ],
   }),
   component: ProfilePage,
@@ -101,23 +101,23 @@ function ProfilePage() {
     (b) => b.status === "completed" || b.status === "cancelled",
   );
   const displayName = tgUser
-    ? [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ") || tgUser.username || "Р“РѕСЃС‚СЊ"
-    : "Р“РѕСЃС‚СЊ";
+    ? [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ") || tgUser.username || "Гость"
+    : "Гость";
   const initials = (displayName.match(/\p{L}/u)?.[0] || "?").toUpperCase();
   const tgPhoto = tgUser?.photo_url;
 
   return (
-    <main className="mx-auto min-h-screen max-w-md md:max-w-5xl bg-bg-deep pb-28 text-bg-ivory">
+    <main className="mx-auto min-h-screen max-w-md md:max-w-3xl bg-bg-deep pb-28 text-bg-ivory">
       {/* header */}
       <section className="relative gradient-hero rounded-b-[40px] px-5 pt-12 pb-7">
         <div className="flex items-center justify-between">
-          <span className="caption text-bg-ivory/70">Р›РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚</span>
+          <span className="caption text-bg-ivory/70">Личный кабинет</span>
           <button
             onClick={() => {
               haptic("light");
               setSettingsOpen(true);
             }}
-            aria-label="РќР°СЃС‚СЂРѕР№РєРё"
+            aria-label="Настройки"
             className="flex h-9 w-9 items-center justify-center rounded-pill bg-bg-ivory/10 active:bg-bg-ivory/20 transition-colors"
           >
             <Settings className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
@@ -140,12 +140,12 @@ function ProfilePage() {
           <div className="flex-1">
             <h1 className="text-[22px] font-bold leading-tight">{displayName}</h1>
             <p className="text-[12px] text-bg-ivory/60">
-              {tgUser?.username ? `@${tgUser.username}` : "Р’РѕР№РґРёС‚Рµ С‡РµСЂРµР· Telegram"}
+              {tgUser?.username ? `@${tgUser.username}` : "Войдите через Telegram"}
             </p>
           </div>
         </div>
 
-        {/* loyalty card вЂ” real data from D1 */}
+        {/* loyalty card — real data from D1 */}
         <LoyaltyCard view={loyalty} />
       </section>
 
@@ -153,7 +153,7 @@ function ProfilePage() {
       <section className="mt-7 px-5">
         <div className="flex items-baseline justify-between">
           <h2 className="text-[18px] font-bold">
-            РџСЂРµРґСЃС‚РѕСЏС‰РёРµ <span className="font-serif-italic text-accent">Р·Р°РїРёСЃРё</span>
+            Предстоящие <span className="font-serif-italic text-accent">записи</span>
           </h2>
           <span className="caption text-bg-ivory/50">{upcoming.length}</span>
         </div>
@@ -161,7 +161,7 @@ function ProfilePage() {
         <div className="mt-3 space-y-2">
           {bookingsLoading ? (
             <div className="rounded-[20px] bg-bg-ivory/5 p-4 text-[13px] text-bg-ivory/50">
-              Р—Р°РіСЂСѓР¶Р°РµРјвЂ¦
+              Загружаем…
             </div>
           ) : upcoming.length === 0 ? (
             <Link
@@ -169,7 +169,7 @@ function ProfilePage() {
               className="flex items-center gap-3 rounded-[20px] bg-bg-ivory/5 p-4 text-bg-ivory/70"
             >
               <CalendarDays className="h-5 w-5 text-accent" />
-              Р—Р°РїРёСЃРµР№ РїРѕРєР° РЅРµС‚ вЂ” СЃР°РјРѕРµ РІСЂРµРјСЏ Р·Р°РїРёСЃР°С‚СЊСЃСЏ
+              Записей пока нет — самое время записаться
               <ChevronRight className="ml-auto h-4 w-4" />
             </Link>
           ) : (
@@ -178,30 +178,30 @@ function ProfilePage() {
         </div>
       </section>
 
-      {/* quick links вЂ” each opens a contextual sheet */}
+      {/* quick links — each opens a contextual sheet */}
       <section className="mt-7 grid grid-cols-2 gap-3 px-5">
         <QuickActionButton
           icon={<Users />}
-          label="РџСЂРёРіР»Р°СЃРёС‚СЊ РґСЂСѓРіР°"
-          sub="+50 000 Р±РѕРЅСѓСЃРѕРІ"
+          label="Пригласить друга"
+          sub="+50 000 бонусов"
           onOpen={() => setRefOpen(true)}
         />
         <QuickActionButton
           icon={<CalendarDays />}
-          label="РњРѕР№ РєР°Р»РµРЅРґР°СЂСЊ"
-          sub="РІСЃРµ РІРёР·РёС‚С‹"
+          label="Мой календарь"
+          sub="все визиты"
           onOpen={() => setCalOpen(true)}
         />
         <QuickActionLink
           icon={<Gift />}
-          label="РџСЂРѕРјРѕРєРѕРґС‹"
-          sub={`${myPromoCodes.length} Р°РєС‚РёРІРЅС‹С…`}
+          label="Промокоды"
+          sub={`${myPromoCodes.length} активных`}
           to="/promos"
         />
         <QuickActionButton
           icon={<Sparkle />}
           label="Bravo Club"
-          sub="РџСЂРёРІРёР»РµРіРёРё"
+          sub="Привилегии"
           onOpen={() => setClubOpen(true)}
         />
       </section>
@@ -219,9 +219,9 @@ function ProfilePage() {
             <MessageCircle className="h-4 w-4" strokeWidth={1.8} aria-hidden="true" />
           </div>
           <div className="flex-1">
-            <p className="text-[14px] font-semibold">РќР°РїРёСЃР°С‚СЊ РІ Bravo</p>
+            <p className="text-[14px] font-semibold">Написать в Bravo</p>
             <p className="text-[11px] text-bg-ivory/60">
-              Р’РѕРїСЂРѕСЃС‹, РїРµСЂРµРЅРѕСЃС‹, РїРѕР¶РµР»Р°РЅРёСЏ
+              Вопросы, переносы, пожелания
             </p>
           </div>
           <ChevronRight className="h-4 w-4 text-bg-ivory/40" aria-hidden="true" />
@@ -232,7 +232,7 @@ function ProfilePage() {
       {(myCerts ?? []).length > 0 && (
         <section className="mt-7 px-5">
           <h2 className="text-[18px] font-bold">
-            РњРѕРё <span className="font-serif-italic text-accent">РІР°СѓС‡РµСЂС‹</span>
+            Мои <span className="font-serif-italic text-accent">ваучеры</span>
           </h2>
           <div className="mt-3 space-y-2">
             {(myCerts ?? []).map((c) => (
@@ -243,12 +243,12 @@ function ProfilePage() {
                 <Gift className="h-6 w-6 text-accent" strokeWidth={1.7} aria-hidden="true" />
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-semibold">
-                    {c.amountBalance.toLocaleString("ru-RU")} СЃСѓРј
+                    {c.amountBalance.toLocaleString("ru-RU")} сум
                   </p>
                   <p className="text-[11px] text-bg-ivory/60">
-                    РљРѕРґ:{" "}
+                    Код:{" "}
                     <span className="font-mono text-accent">{c.code}</span>
-                    {c.expiresAt && ` В· РґРѕ ${c.expiresAt}`}
+                    {c.expiresAt && ` · до ${c.expiresAt}`}
                   </p>
                 </div>
               </div>
@@ -261,7 +261,7 @@ function ProfilePage() {
       {(myPkgs ?? []).length > 0 && (
         <section className="mt-7 px-5">
           <h2 className="text-[18px] font-bold">
-            РњРѕРё <span className="font-serif-italic text-accent">Р°Р±РѕРЅРµРјРµРЅС‚С‹</span>
+            Мои <span className="font-serif-italic text-accent">абонементы</span>
           </h2>
           <div className="mt-3 space-y-2">
             {(myPkgs ?? []).map((p) => {
@@ -274,8 +274,8 @@ function ProfilePage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-[14px] font-semibold truncate">{p.title}</p>
                       <p className="text-[11px] text-bg-ivory/60">
-                        РћСЃС‚Р°Р»РѕСЃСЊ {left} РёР· {p.totalVisits}
-                        {p.expiresAt && ` В· РґРѕ ${p.expiresAt}`}
+                        Осталось {left} из {p.totalVisits}
+                        {p.expiresAt && ` · до ${p.expiresAt}`}
                       </p>
                     </div>
                   </div>
@@ -294,9 +294,9 @@ function ProfilePage() {
 
       {/* promo codes */}
       <section className="mt-7 px-5">
-        <h2 className="text-[18px] font-bold">РњРѕРё РїСЂРѕРјРѕРєРѕРґС‹</h2>
+        <h2 className="text-[18px] font-bold">Мои промокоды</h2>
         <p className="mt-1 text-[12px] text-bg-ivory/50">
-          РўР°Рї РЅР° РєРѕРґ в†’ СЃРєРѕРїРёСЂРѕРІР°С‚СЊ. В«РџСЂРёРјРµРЅРёС‚СЊВ» в†’ РѕС‚РєСЂРѕРµС‚СЃСЏ Р±СЂРѕРЅРёСЂРѕРІР°РЅРёРµ, РєРѕРґ РїРѕРґСЃС‚Р°РІРёС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё.
+          Тап на код → скопировать. «Применить» → откроется бронирование, код подставится автоматически.
         </p>
         <div className="mt-3 space-y-2">
           {myPromoCodes.map((p) => (
@@ -320,7 +320,7 @@ function ProfilePage() {
                     const tg = getTelegramWebApp() as unknown as {
                       showAlert?: (m: string) => void;
                     };
-                    if (tg?.showAlert) tg.showAlert(`РљРѕРґ ${p.code} СЃРєРѕРїРёСЂРѕРІР°РЅ`);
+                    if (tg?.showAlert) tg.showAlert(`Код ${p.code} скопирован`);
                   }}
                   className="rounded-pill bg-accent/15 px-3 py-1 text-[11px] font-bold tracking-widest text-accent active:bg-accent/25"
                 >
@@ -333,14 +333,14 @@ function ProfilePage() {
                 onClick={() => haptic("success")}
                 className="mt-3 block w-full rounded-pill bg-accent px-3 py-2 text-center text-[12px] font-semibold text-accent-foreground active:opacity-90"
               >
-                РџСЂРёРјРµРЅРёС‚СЊ РїСЂРё Р±СЂРѕРЅРёСЂРѕРІР°РЅРёРё в†’
+                Применить при бронировании →
               </Link>
             </div>
           ))}
         </div>
       </section>
 
-      {/* history в†’ opens drawer */}
+      {/* history → opens drawer */}
       {history.length > 0 && (
         <section className="mt-7 px-5">
           <button
@@ -355,9 +355,9 @@ function ProfilePage() {
               <History className="h-4 w-4" strokeWidth={1.8} aria-hidden="true" />
             </div>
             <div className="flex-1 text-left">
-              <p className="text-[14px] font-semibold">РСЃС‚РѕСЂРёСЏ РІРёР·РёС‚РѕРІ</p>
+              <p className="text-[14px] font-semibold">История визитов</p>
               <p className="text-[11px] text-bg-ivory/60">
-                {history.length} {history.length === 1 ? "Р·Р°РїРёСЃСЊ" : history.length < 5 ? "Р·Р°РїРёСЃРё" : "Р·Р°РїРёСЃРµР№"}
+                {history.length} {history.length === 1 ? "запись" : history.length < 5 ? "записи" : "записей"}
               </p>
             </div>
             <ChevronRight className="h-4 w-4 text-bg-ivory/40" aria-hidden="true" />
@@ -393,7 +393,7 @@ function BookingCard({ b }: { b: ClientBooking }) {
       timeZone: "UTC",
     });
     const time = b.startAt.slice(11, 16);
-    const text = `РЇ Р·Р°РїРёСЃР°Р»СЃСЏ РІ Bravo Barbershop вњ‚пёЏ\n${b.serviceTitle}\n${dateLabel} РІ ${time}\n${b.branchName}`;
+    const text = `Я записался в Bravo Barbershop ✂️\n${b.serviceTitle}\n${dateLabel} в ${time}\n${b.branchName}`;
     const url = "https://t.me/bravobarber_bot";
     return `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
   })();
@@ -421,12 +421,12 @@ function BookingCard({ b }: { b: ClientBooking }) {
 
   const statusLabel =
     b.status === "upcoming"
-      ? "РЎРєРѕСЂРѕ"
+      ? "Скоро"
       : b.status === "confirmed"
-        ? "РџРѕРґС‚РІРµСЂР¶РґРµРЅРѕ"
+        ? "Подтверждено"
         : b.status === "completed"
-          ? "РџСЂРѕС€Р»Рѕ"
-          : "РћС‚РјРµРЅР°";
+          ? "Прошло"
+          : "Отмена";
 
   const canCancel = b.status === "upcoming" || b.status === "confirmed";
 
@@ -439,10 +439,10 @@ function BookingCard({ b }: { b: ClientBooking }) {
       cancelMut.mutate(b.id);
     };
     if (tg?.showConfirm) {
-      tg.showConfirm("РћС‚РјРµРЅРёС‚СЊ Р·Р°РїРёСЃСЊ?", (ok) => {
+      tg.showConfirm("Отменить запись?", (ok) => {
         if (ok) doIt();
       });
-    } else if (typeof window !== "undefined" && window.confirm("РћС‚РјРµРЅРёС‚СЊ Р·Р°РїРёСЃСЊ?")) {
+    } else if (typeof window !== "undefined" && window.confirm("Отменить запись?")) {
       doIt();
     }
   };
@@ -455,7 +455,7 @@ function BookingCard({ b }: { b: ClientBooking }) {
             {b.serviceTitle}
           </p>
           <p className="mt-1 text-[12px] text-bg-ivory/60">
-            {b.masterName} В· {b.branchName}
+            {b.masterName} · {b.branchName}
           </p>
         </div>
         <span
@@ -466,7 +466,7 @@ function BookingCard({ b }: { b: ClientBooking }) {
       </div>
       <div className="mt-3 flex items-center justify-between text-[12px]">
         <span className="text-bg-ivory/70">
-          {date} В· {time}
+          {date} · {time}
         </span>
         <span className="font-semibold text-accent">{formatSum(b.price)}</span>
       </div>
@@ -478,9 +478,9 @@ function BookingCard({ b }: { b: ClientBooking }) {
             rel="noopener noreferrer"
             onClick={() => haptic("light")}
             className="flex-1 rounded-pill bg-bg-ivory/10 px-3 py-2 text-center text-[12px] font-medium text-bg-ivory active:bg-bg-ivory/15"
-            title="РџРѕРґРµР»РёС‚СЊСЃСЏ РІ Telegram"
+            title="Поделиться в Telegram"
           >
-            в†— РџРѕРґРµР»РёС‚СЊСЃСЏ
+            ↗ Поделиться
           </a>
           <button
             type="button"
@@ -488,7 +488,7 @@ function BookingCard({ b }: { b: ClientBooking }) {
             disabled={cancelMut.isPending}
             className="flex-1 rounded-pill bg-destructive/15 px-3 py-2 text-[12px] font-medium text-destructive active:bg-destructive/25 disabled:opacity-50"
           >
-            {cancelMut.isPending ? "..." : "РћС‚РјРµРЅРёС‚СЊ"}
+            {cancelMut.isPending ? "..." : "Отменить"}
           </button>
         </div>
       )}
@@ -500,7 +500,7 @@ function BookingCard({ b }: { b: ClientBooking }) {
             onClick={() => haptic("light")}
             className="mt-3 block rounded-pill bg-accent/10 px-3 py-2 text-center text-[12px] font-medium text-accent active:bg-accent/20"
           >
-            в†» РџРѕРІС‚РѕСЂРёС‚СЊ Р·Р°РїРёСЃСЊ
+            ↻ Повторить запись
           </Link>
           <ReviewBlock booking={b} />
         </>
@@ -518,7 +518,7 @@ function ReviewBlock({ booking }: { booking: ClientBooking }) {
   if (createMut.isSuccess) {
     return (
       <div className="mt-3 rounded-pill bg-accent/15 px-3 py-2 text-center text-[12px] font-medium text-accent">
-        РЎРїР°СЃРёР±Рѕ Р·Р° РѕС‚Р·С‹РІ вњЁ
+        Спасибо за отзыв ✨
       </div>
     );
   }
@@ -533,7 +533,7 @@ function ReviewBlock({ booking }: { booking: ClientBooking }) {
         }}
         className="mt-3 w-full rounded-pill bg-accent/10 px-3 py-2 text-[12px] font-medium text-accent active:bg-accent/20"
       >
-        в… РћСЃС‚Р°РІРёС‚СЊ РѕС‚Р·С‹РІ
+        ★ Оставить отзыв
       </button>
     );
   }
@@ -550,10 +550,10 @@ function ReviewBlock({ booking }: { booking: ClientBooking }) {
               setRating(n);
             }}
             className="text-[28px] leading-none transition-transform active:scale-110"
-            aria-label={`${n} Р·РІС‘Р·Рґ`}
+            aria-label={`${n} звёзд`}
           >
             <span className={n <= rating ? "text-accent" : "text-bg-ivory/20"}>
-              в…
+              ★
             </span>
           </button>
         ))}
@@ -561,7 +561,7 @@ function ReviewBlock({ booking }: { booking: ClientBooking }) {
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Р Р°СЃСЃРєР°Р¶РёС‚Рµ Рѕ РІРёР·РёС‚РµвЂ¦"
+        placeholder="Расскажите о визите…"
         rows={3}
         className="w-full rounded-[16px] bg-bg-ivory/5 px-3 py-2 text-[13px] text-bg-ivory outline-none placeholder:text-bg-ivory/40 focus:bg-bg-ivory/10"
         maxLength={1000}
@@ -569,7 +569,7 @@ function ReviewBlock({ booking }: { booking: ClientBooking }) {
       {createMut.isError ||
       (createMut.data && !createMut.data.ok && createMut.data.error) ? (
         <p className="text-[11px] text-red-400">
-          {createMut.data?.error ?? "РќРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РїСЂР°РІРёС‚СЊ РѕС‚Р·С‹РІ"}
+          {createMut.data?.error ?? "Не удалось отправить отзыв"}
         </p>
       ) : null}
       <div className="flex gap-2">
@@ -578,7 +578,7 @@ function ReviewBlock({ booking }: { booking: ClientBooking }) {
           onClick={() => setOpen(false)}
           className="flex-1 rounded-pill bg-bg-ivory/10 px-3 py-2 text-[12px] font-medium text-bg-ivory active:bg-bg-ivory/15"
         >
-          РћС‚РјРµРЅР°
+          Отмена
         </button>
         <button
           type="button"
@@ -593,7 +593,7 @@ function ReviewBlock({ booking }: { booking: ClientBooking }) {
           disabled={createMut.isPending}
           className="flex-1 rounded-pill bg-accent px-3 py-2 text-[12px] font-medium text-accent-foreground active:opacity-90 disabled:opacity-50"
         >
-          {createMut.isPending ? "..." : "РћС‚РїСЂР°РІРёС‚СЊ"}
+          {createMut.isPending ? "..." : "Отправить"}
         </button>
       </div>
     </div>
@@ -628,16 +628,16 @@ function LoyaltyCard({ view }: { view: import("@/lib/loyalty-client").LoyaltyVie
       <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent/40 blur-3xl" />
       <div className="relative flex items-start justify-between">
         <div>
-          <span className="caption text-accent-dark">РЈСЂРѕРІРµРЅСЊ {tierLabel}</span>
+          <span className="caption text-accent-dark">Уровень {tierLabel}</span>
           <p className="mt-1 text-[28px] font-bold leading-none">
             {points.toLocaleString("ru-RU")}{" "}
-            <span className="text-base font-medium">Р±РѕРЅСѓСЃРѕРІ</span>
+            <span className="text-base font-medium">бонусов</span>
           </p>
           <p className="mt-1 text-[12px] text-muted-foreground">
-            РљРµС€Р±СЌРє <span className="font-semibold">{cashback}%</span>
+            Кешбэк <span className="font-semibold">{cashback}%</span>
             {view.nextTier
-              ? ` В· РґРѕ ${view.nextTierLabel} РѕСЃС‚Р°Р»РѕСЃСЊ ${view.visitsToNextTier} РІРёР·РёС‚${view.visitsToNextTier === 1 ? "" : "РѕРІ"}`
-              : " В· РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СѓСЂРѕРІРµРЅСЊ"}
+              ? ` · до ${view.nextTierLabel} осталось ${view.visitsToNextTier} визит${view.visitsToNextTier === 1 ? "" : "ов"}`
+              : " · максимальный уровень"}
           </p>
         </div>
         <Sparkle className="h-6 w-6 text-accent" strokeWidth={1.6} aria-hidden="true" />
@@ -649,8 +649,8 @@ function LoyaltyCard({ view }: { view: import("@/lib/loyalty-client").LoyaltyVie
         />
       </div>
       <p className="mt-2 text-[11px] text-muted-foreground">
-        Р’РёР·РёС‚РѕРІ: <b>{visits}</b> В· РџРѕС‚СЂР°С‡РµРЅРѕ:{" "}
-        <b>{(view.profile?.totalSpent ?? 0).toLocaleString("ru-RU")} СЃСѓРј</b>
+        Визитов: <b>{visits}</b> · Потрачено:{" "}
+        <b>{(view.profile?.totalSpent ?? 0).toLocaleString("ru-RU")} сум</b>
       </p>
     </div>
   );
@@ -725,14 +725,14 @@ function SoonDrawer({
   const open = kind !== null;
   const content = {
     certificates: {
-      title: "Р’Р°СѓС‡РµСЂС‹",
-      desc: "РџРѕРґР°СЂРѕС‡РЅС‹Р№ РІР°СѓС‡РµСЂ РґР»СЏ РґСЂСѓРіР° РёР»Рё СЂРѕРґРЅС‹С….",
-      body: "Р“РѕС‚РѕРІРёРј Р·Р°РїСѓСЃРє РїРѕРґР°СЂРѕС‡РЅС‹С… РІР°СѓС‡РµСЂРѕРІ: РјРѕР¶РЅРѕ Р±СѓРґРµС‚ РєСѓРїРёС‚СЊ РІР°СѓС‡РµСЂ РЅР° Р»СЋР±СѓСЋ СЃСѓРјРјСѓ Рё РїРѕРґР°СЂРёС‚СЊ С‡РµСЂРµР· Telegram. Р–РґС‘Рј РІР°СЃ РІ РѕР±РЅРѕРІР»РµРЅРёРё рџ’›",
+      title: "Ваучеры",
+      desc: "Подарочный ваучер для друга или родных.",
+      body: "Готовим запуск подарочных ваучеров: можно будет купить ваучер на любую сумму и подарить через Telegram. Ждём вас в обновлении 💛",
     },
     favorites: {
-      title: "Р›СЋР±РёРјС‹Рµ РјР°СЃС‚РµСЂР°",
-      desc: "Р‘С‹СЃС‚СЂС‹Р№ РґРѕСЃС‚СѓРї Рє РёР·Р±СЂР°РЅРЅС‹Рј.",
-      body: "РЎРєРѕСЂРѕ РґРѕР±Р°РІРёРј РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ СЃРѕС…СЂР°РЅСЏС‚СЊ Р»СЋР±РёРјС‹С… РјР°СЃС‚РµСЂРѕРІ РІ РёР·Р±СЂР°РЅРЅРѕРµ вЂ” Р·Р°РїРёСЃС‹РІР°Р№С‚РµСЃСЊ Рє РЅРёРј РІ РѕРґРёРЅ С‚Р°Рї. РЎРµР№С‡Р°СЃ РІС‹Р±РµСЂРёС‚Рµ РјР°СЃС‚РµСЂР° РЅР° СЃС‚СЂР°РЅРёС†Рµ СѓСЃР»СѓРіРё.",
+      title: "Любимые мастера",
+      desc: "Быстрый доступ к избранным.",
+      body: "Скоро добавим возможность сохранять любимых мастеров в избранное — записывайтесь к ним в один тап. Сейчас выберите мастера на странице услуги.",
     },
   }[kind ?? "certificates"];
   return (
@@ -743,7 +743,7 @@ function SoonDrawer({
             <button
               type="button"
               onClick={() => { haptic("light"); onClose(); }}
-              aria-label="РќР°Р·Р°Рґ"
+              aria-label="Назад"
               className="flex h-9 w-9 items-center justify-center rounded-pill bg-bg-ivory/10 active:bg-bg-ivory/20 shrink-0"
             >
               <ChevronLeft className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
@@ -756,7 +756,7 @@ function SoonDrawer({
         </DrawerHeader>
         <div className="px-4 pb-6">
           <div className="rounded-[20px] bg-bg-ivory/5 p-4">
-            <span className="caption text-accent">РЎРєРѕСЂРѕ</span>
+            <span className="caption text-accent">Скоро</span>
             <p className="mt-2 text-[14px] text-bg-ivory/80">{content.body}</p>
           </div>
         </div>
@@ -784,7 +784,7 @@ function ClubDrawer({
             <button
               type="button"
               onClick={() => { haptic("light"); onClose(); }}
-              aria-label="РќР°Р·Р°Рґ"
+              aria-label="Назад"
               className="flex h-9 w-9 items-center justify-center rounded-pill bg-bg-ivory/10 active:bg-bg-ivory/20 shrink-0"
             >
               <ChevronLeft className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
@@ -792,27 +792,27 @@ function ClubDrawer({
             <DrawerTitle className="text-bg-ivory">Bravo Club</DrawerTitle>
           </div>
           <DrawerDescription className="text-bg-ivory/60">
-            РџСЂРѕРіСЂР°РјРјР° Р»РѕСЏР»СЊРЅРѕСЃС‚Рё.
+            Программа лояльности.
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4 pb-6 space-y-3">
           <div className="rounded-[20px] bg-accent/15 p-4 border border-accent/20">
-            <span className="caption text-accent">Р’Р°С€ СѓСЂРѕРІРµРЅСЊ</span>
+            <span className="caption text-accent">Ваш уровень</span>
             <p className="mt-1 text-[24px] font-bold text-bg-ivory">{tier}</p>
             <p className="mt-1 text-[13px] text-bg-ivory/70">
-              РљРµС€Р±СЌРє {cashback}% СЃ РєР°Р¶РґРѕРіРѕ Р·Р°РІРµСЂС€С‘РЅРЅРѕРіРѕ РІРёР·РёС‚Р°.
+              Кешбэк {cashback}% с каждого завершённого визита.
             </p>
           </div>
           <div className="rounded-[20px] bg-bg-ivory/5 p-4 space-y-2 text-[13px]">
-            <p className="font-semibold mb-1">РљР°Рє СЂР°Р±РѕС‚Р°СЋС‚ СѓСЂРѕРІРЅРё</p>
-            <p className="flex items-center gap-2 text-bg-ivory/70"><Medal className="h-4 w-4 text-[#cd7f32]" strokeWidth={1.8} /><b>Bronze</b> вЂ” 5% РєРµС€Р±СЌРє (РЅРѕРІС‹Р№ РєР»РёРµРЅС‚)</p>
-            <p className="flex items-center gap-2 text-bg-ivory/70"><Medal className="h-4 w-4 text-bg-ivory/70" strokeWidth={1.8} /><b>Silver</b> вЂ” 8% (РїРѕСЃР»Рµ 3 РІРёР·РёС‚РѕРІ)</p>
-            <p className="flex items-center gap-2 text-bg-ivory/70"><Trophy className="h-4 w-4 text-accent" strokeWidth={1.8} /><b>Gold</b> вЂ” 12% (РїРѕСЃР»Рµ 10 РІРёР·РёС‚РѕРІ)</p>
-            <p className="flex items-center gap-2 text-bg-ivory/70"><Gem className="h-4 w-4 text-cyan-300" strokeWidth={1.8} /><b>Platinum</b> вЂ” 15% (РїРѕСЃР»Рµ 25 РІРёР·РёС‚РѕРІ)</p>
+            <p className="font-semibold mb-1">Как работают уровни</p>
+            <p className="flex items-center gap-2 text-bg-ivory/70"><Medal className="h-4 w-4 text-[#cd7f32]" strokeWidth={1.8} /><b>Bronze</b> — 5% кешбэк (новый клиент)</p>
+            <p className="flex items-center gap-2 text-bg-ivory/70"><Medal className="h-4 w-4 text-bg-ivory/70" strokeWidth={1.8} /><b>Silver</b> — 8% (после 3 визитов)</p>
+            <p className="flex items-center gap-2 text-bg-ivory/70"><Trophy className="h-4 w-4 text-accent" strokeWidth={1.8} /><b>Gold</b> — 12% (после 10 визитов)</p>
+            <p className="flex items-center gap-2 text-bg-ivory/70"><Gem className="h-4 w-4 text-cyan-300" strokeWidth={1.8} /><b>Platinum</b> — 15% (после 25 визитов)</p>
           </div>
           <div className="rounded-[20px] bg-bg-ivory/5 p-4 text-[13px] text-bg-ivory/80">
-            <p className="font-semibold mb-1">РљР°Рє РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р±РѕРЅСѓСЃС‹</p>
-            <p>РќР° С€Р°РіРµ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ Р·Р°РїРёСЃРё РІРєР»СЋС‡РёС‚Рµ С‚СѓРјР±Р»РµСЂ В«РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р±РѕРЅСѓСЃС‹В» вЂ” РѕРїР»Р°С‚РёС‚Рµ РґРѕ 50% СЃС‚РѕРёРјРѕСЃС‚Рё РЅР°РєРѕРїР»РµРЅРЅС‹РјРё Р±Р°Р»Р»Р°РјРё.</p>
+            <p className="font-semibold mb-1">Как использовать бонусы</p>
+            <p>На шаге подтверждения записи включите тумблер «Использовать бонусы» — оплатите до 50% стоимости накопленными баллами.</p>
           </div>
         </div>
       </DrawerContent>
@@ -867,15 +867,15 @@ function SettingsDrawer({
                 haptic("light");
                 onClose();
               }}
-              aria-label="РќР°Р·Р°Рґ"
+              aria-label="Назад"
               className="flex h-9 w-9 items-center justify-center rounded-pill bg-bg-ivory/10 active:bg-bg-ivory/20"
             >
               <ChevronLeft className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
             </button>
             <div className="flex-1">
-              <DrawerTitle className="text-bg-ivory">РќР°СЃС‚СЂРѕР№РєРё</DrawerTitle>
+              <DrawerTitle className="text-bg-ivory">Настройки</DrawerTitle>
               <DrawerDescription className="text-bg-ivory/60">
-                РЇР·С‹Рє РёРЅС‚РµСЂС„РµР№СЃР° Рё РїР°СЂР°РјРµС‚СЂС‹ Р°РєРєР°СѓРЅС‚Р°.
+                Язык интерфейса и параметры аккаунта.
               </DrawerDescription>
             </div>
           </div>
@@ -886,13 +886,13 @@ function SettingsDrawer({
             <div className="mb-3 flex items-center gap-2">
               <Globe className="h-4 w-4 text-accent" aria-hidden="true" />
               <span className="text-[13px] font-semibold uppercase tracking-wider text-bg-ivory/70">
-                РЇР·С‹Рє
+                Язык
               </span>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {([
-                { code: "ru" as const, label: "Р СѓСЃСЃРєРёР№" },
-                { code: "uz" as const, label: "OК»zbekcha" },
+                { code: "ru" as const, label: "Русский" },
+                { code: "uz" as const, label: "Oʻzbekcha" },
               ]).map((opt) => (
                 <button
                   key={opt.code}
@@ -911,7 +911,7 @@ function SettingsDrawer({
               ))}
             </div>
             <p className="mt-2 text-[11px] text-bg-ivory/50">
-              РџРѕР»РЅС‹Р№ РїРµСЂРµРІРѕРґ РёРЅС‚РµСЂС„РµР№СЃР° РґРѕР±Р°РІРёРј РІ СЃР»РµРґСѓСЋС‰РµРј РѕР±РЅРѕРІР»РµРЅРёРё.
+              Полный перевод интерфейса добавим в следующем обновлении.
             </p>
           </div>
 
@@ -919,11 +919,11 @@ function SettingsDrawer({
             <div className="mb-3 flex items-center gap-2">
               <Cake className="h-4 w-4 text-accent" strokeWidth={1.8} aria-hidden="true" />
               <span className="text-[13px] font-semibold uppercase tracking-wider text-bg-ivory/70">
-                Р”РµРЅСЊ СЂРѕР¶РґРµРЅРёСЏ
+                День рождения
               </span>
             </div>
             <p className="text-[12px] text-bg-ivory/60 mb-2">
-              Р’ СЃРІРѕР№ РґРµРЅСЊ СЂРѕР¶РґРµРЅРёСЏ РїРѕР»СѓС‡РёС‚Рµ СЃРєРёРґРєСѓ 25% РЅР° Р»СЋР±СѓСЋ СѓСЃР»СѓРіСѓ.
+              В свой день рождения получите скидку 25% на любую услугу.
             </p>
             <div className="flex gap-2">
               <input
@@ -941,11 +941,11 @@ function SettingsDrawer({
                 }}
                 className="rounded-pill bg-accent px-4 py-2 text-[14px] font-medium text-accent-foreground active:opacity-90 disabled:opacity-50"
               >
-                {setBirthdayMut.isPending ? "..." : "РЎРѕС…СЂР°РЅРёС‚СЊ"}
+                {setBirthdayMut.isPending ? "..." : "Сохранить"}
               </button>
             </div>
             {setBirthdayMut.isSuccess && (
-              <p className="mt-2 text-[11px] text-accent">РЎРѕС…СЂР°РЅРµРЅРѕ вњ“</p>
+              <p className="mt-2 text-[11px] text-accent">Сохранено ✓</p>
             )}
           </div>
 
@@ -955,11 +955,11 @@ function SettingsDrawer({
               <div className="mb-2 flex items-center gap-2">
                 <Bell className="h-4 w-4 text-accent" strokeWidth={1.8} aria-hidden="true" />
                 <span className="text-[13px] font-semibold uppercase tracking-wider text-bg-ivory/70">
-                  Push-СѓРІРµРґРѕРјР»РµРЅРёСЏ
+                  Push-уведомления
                 </span>
               </div>
               <p className="text-[12px] text-bg-ivory/60 mb-3">
-                РќР°РїРѕРјРёРЅР°РЅРёСЏ Рё РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ Р±СѓРґСѓС‚ РїСЂРёС…РѕРґРёС‚СЊ РєР°Рє РѕР±С‹С‡РЅС‹Рµ СѓРІРµРґРѕРјР»РµРЅРёСЏ С‚РµР»РµС„РѕРЅР°.
+                Напоминания и подтверждения будут приходить как обычные уведомления телефона.
               </p>
               <button
                 type="button"
@@ -974,12 +974,12 @@ function SettingsDrawer({
                 {subscribePush.isPending || unsubscribePush.isPending
                   ? "..."
                   : pushStatus.subscribed
-                    ? "РћС‚РєР»СЋС‡РёС‚СЊ push"
-                    : "Р’РєР»СЋС‡РёС‚СЊ push"}
+                    ? "Отключить push"
+                    : "Включить push"}
               </button>
               {pushStatus.permission === "denied" && (
                 <p className="mt-2 text-[11px] text-red-400">
-                  РЈРІРµРґРѕРјР»РµРЅРёСЏ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅС‹ РІ Р±СЂР°СѓР·РµСЂРµ. РћС‚РєСЂРѕР№С‚Рµ РЅР°СЃС‚СЂРѕР№РєРё СЃР°Р№С‚Р°.
+                  Уведомления заблокированы в браузере. Откройте настройки сайта.
                 </p>
               )}
             </div>
@@ -995,7 +995,7 @@ function SettingsDrawer({
             className="flex w-full items-center justify-center gap-2 rounded-pill bg-bg-ivory/10 px-4 py-3 text-[14px] font-medium active:bg-bg-ivory/15"
           >
             <LogOut className="h-4 w-4" aria-hidden="true" />
-            Р—Р°РєСЂС‹С‚СЊ Mini App
+            Закрыть Mini App
           </button>
         </div>
       </DrawerContent>
@@ -1010,7 +1010,7 @@ function ReferralDrawer({ open, onClose }: { open: boolean; onClose: () => void 
   const tgShareUrl = `https://t.me/share/url?url=${encodeURIComponent(
     inviteUrl,
   )}&text=${encodeURIComponent(
-    "Р—Р°РїРёСЃС‹РІР°Р№СЃСЏ СЃРѕ РјРЅРѕР№ РІ Bravo Barbershop вњ‚пёЏ РџРѕР»СѓС‡РёС€СЊ 50 000 Р±РѕРЅСѓСЃРѕРІ РїСЂРё РїРµСЂРІРѕР№ Р·Р°РїРёСЃРё С‡РµСЂРµР· СЌС‚Сѓ СЃСЃС‹Р»РєСѓ:",
+    "Записывайся со мной в Bravo Barbershop ✂️ Получишь 50 000 бонусов при первой записи через эту ссылку:",
   )}`;
 
   return (
@@ -1021,27 +1021,27 @@ function ReferralDrawer({ open, onClose }: { open: boolean; onClose: () => void 
             <button
               type="button"
               onClick={() => { haptic("light"); onClose(); }}
-              aria-label="РќР°Р·Р°Рґ"
+              aria-label="Назад"
               className="flex h-9 w-9 items-center justify-center rounded-pill bg-bg-ivory/10 active:bg-bg-ivory/20 shrink-0"
             >
               <ChevronLeft className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
             </button>
-            <DrawerTitle className="text-bg-ivory">РџСЂРёРіР»Р°СЃРё РґСЂСѓРіР°</DrawerTitle>
+            <DrawerTitle className="text-bg-ivory">Пригласи друга</DrawerTitle>
           </div>
           <DrawerDescription className="text-bg-ivory/60">
-            РљРѕРіРґР° РґСЂСѓРі РѕС‚РєСЂРѕРµС‚ Bravo РїРѕ С‚РІРѕРµР№ СЃСЃС‹Р»РєРµ Рё Р·Р°РїРёС€РµС‚СЃСЏ вЂ” РѕР±Р° РїРѕР»СѓС‡РёС‚Рµ РїРѕ 50 000 Р±РѕРЅСѓСЃРѕРІ.
+            Когда друг откроет Bravo по твоей ссылке и запишется — оба получите по 50 000 бонусов.
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4 pb-6 space-y-3">
           <div className="grid grid-cols-2 gap-2">
             <div className="rounded-[14px] bg-bg-ivory/5 p-3">
-              <p className="text-[10px] uppercase text-bg-ivory/50">РџСЂРёРіР»Р°С€РµРЅРѕ</p>
+              <p className="text-[10px] uppercase text-bg-ivory/50">Приглашено</p>
               <p className="mt-1 text-[20px] font-bold text-bg-ivory">
                 {ref?.invitedCount ?? 0}
               </p>
             </div>
             <div className="rounded-[14px] bg-bg-ivory/5 p-3">
-              <p className="text-[10px] uppercase text-bg-ivory/50">Р—Р°СЂР°Р±РѕС‚Р°РЅРѕ Р±РѕРЅСѓСЃРѕРІ</p>
+              <p className="text-[10px] uppercase text-bg-ivory/50">Заработано бонусов</p>
               <p className="mt-1 text-[20px] font-bold text-accent">
                 {ref?.bonusEarned ?? 0}
               </p>
@@ -1050,7 +1050,7 @@ function ReferralDrawer({ open, onClose }: { open: boolean; onClose: () => void 
 
           {inviteUrl && (
             <div className="rounded-[16px] bg-bg-ivory/5 p-3">
-              <p className="text-[11px] uppercase text-bg-ivory/50 mb-1">Р’Р°С€Р° СЃСЃС‹Р»РєР°</p>
+              <p className="text-[11px] uppercase text-bg-ivory/50 mb-1">Ваша ссылка</p>
               <p className="break-all text-[12px] font-mono text-bg-ivory/90">{inviteUrl}</p>
               <div className="mt-3 flex gap-2">
                 <button
@@ -1066,7 +1066,7 @@ function ReferralDrawer({ open, onClose }: { open: boolean; onClose: () => void 
                   className="flex-1 flex items-center justify-center gap-1 rounded-pill bg-bg-ivory/10 px-3 py-2 text-[13px] font-medium text-bg-ivory active:bg-bg-ivory/15"
                 >
                   <Copy className="h-3.5 w-3.5" />
-                  {copied ? "РЎРєРѕРїРёСЂРѕРІР°РЅРѕ" : "РЎРєРѕРїРёСЂРѕРІР°С‚СЊ"}
+                  {copied ? "Скопировано" : "Скопировать"}
                 </button>
                 <a
                   href={tgShareUrl}
@@ -1075,17 +1075,17 @@ function ReferralDrawer({ open, onClose }: { open: boolean; onClose: () => void 
                   onClick={() => haptic("success")}
                   className="flex-1 rounded-pill bg-accent px-3 py-2 text-center text-[13px] font-medium text-accent-foreground active:opacity-90"
                 >
-                  РћС‚РїСЂР°РІРёС‚СЊ РІ TG
+                  Отправить в TG
                 </a>
               </div>
             </div>
           )}
 
           <div className="rounded-[16px] bg-bg-ivory/5 p-3 text-[12px] text-bg-ivory/70">
-            <p className="font-semibold mb-1 text-bg-ivory">РљР°Рє СЌС‚Рѕ СЂР°Р±РѕС‚Р°РµС‚</p>
-            <p>1. РЎРєРѕРїРёСЂСѓР№ РёР»Рё РѕС‚РїСЂР°РІСЊ СЃСЃС‹Р»РєСѓ РґСЂСѓРіСѓ</p>
-            <p>2. РћРЅ РѕС‚РєСЂРѕРµС‚ Bravo РїРѕ СЃСЃС‹Р»РєРµ Рё СЃРґРµР»Р°РµС‚ РїРµСЂРІСѓСЋ Р·Р°РїРёСЃСЊ</p>
-            <p>3. РџРѕСЃР»Рµ Р·Р°РІРµСЂС€РµРЅРёСЏ РІРёР·РёС‚Р° РІС‹ РѕР±Р° РїРѕР»СѓС‡РёС‚Рµ 50 000 Р±РѕРЅСѓСЃРѕРІ</p>
+            <p className="font-semibold mb-1 text-bg-ivory">Как это работает</p>
+            <p>1. Скопируй или отправь ссылку другу</p>
+            <p>2. Он откроет Bravo по ссылке и сделает первую запись</p>
+            <p>3. После завершения визита вы оба получите 50 000 бонусов</p>
           </div>
         </div>
       </DrawerContent>
@@ -1143,12 +1143,12 @@ function CalendarDrawer({
             <button
               type="button"
               onClick={() => { haptic("light"); onClose(); }}
-              aria-label="РќР°Р·Р°Рґ"
+              aria-label="Назад"
               className="flex h-9 w-9 items-center justify-center rounded-pill bg-bg-ivory/10 active:bg-bg-ivory/20 shrink-0"
             >
               <ChevronLeft className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
             </button>
-            <DrawerTitle className="text-bg-ivory">РњРѕР№ РєР°Р»РµРЅРґР°СЂСЊ РІРёР·РёС‚РѕРІ</DrawerTitle>
+            <DrawerTitle className="text-bg-ivory">Мой календарь визитов</DrawerTitle>
           </div>
         </DrawerHeader>
         <div className="px-4 pb-6">
@@ -1157,7 +1157,7 @@ function CalendarDrawer({
               type="button"
               onClick={() => shift(-1)}
               className="flex h-9 w-9 items-center justify-center rounded-pill bg-bg-ivory/10 active:bg-bg-ivory/15"
-              aria-label="РџСЂРµРґС‹РґСѓС‰РёР№ РјРµСЃСЏС†"
+              aria-label="Предыдущий месяц"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -1166,14 +1166,14 @@ function CalendarDrawer({
               type="button"
               onClick={() => shift(1)}
               className="flex h-9 w-9 items-center justify-center rounded-pill bg-bg-ivory/10 active:bg-bg-ivory/15"
-              aria-label="РЎР»РµРґСѓСЋС‰РёР№ РјРµСЃСЏС†"
+              aria-label="Следующий месяц"
             >
               <ChevronRightIcon className="h-4 w-4" />
             </button>
           </div>
 
           <div className="grid grid-cols-7 gap-1 text-center text-[10px] text-bg-ivory/50 mb-1">
-            {["РџРЅ", "Р’С‚", "РЎСЂ", "Р§С‚", "РџС‚", "РЎР±", "Р’СЃ"].map((d) => (
+            {["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"].map((d) => (
               <span key={d}>{d}</span>
             ))}
           </div>
@@ -1209,13 +1209,13 @@ function CalendarDrawer({
 
           <div className="mt-4 flex items-center gap-3 text-[11px] text-bg-ivory/60">
             <span className="flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full bg-accent" /> РђРєС‚РёРІРЅС‹Рµ
+              <span className="h-2 w-2 rounded-full bg-accent" /> Активные
             </span>
             <span className="flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" /> РџСЂРѕС€РµРґС€РёРµ
+              <span className="h-2 w-2 rounded-full bg-emerald-400" /> Прошедшие
             </span>
             <span className="flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full bg-bg-ivory/40" /> РћС‚РјРµРЅС‘РЅРЅС‹Рµ
+              <span className="h-2 w-2 rounded-full bg-bg-ivory/40" /> Отменённые
             </span>
           </div>
         </div>
@@ -1242,21 +1242,21 @@ function HistoryDrawer({
             <button
               type="button"
               onClick={() => { haptic("light"); onClose(); }}
-              aria-label="РќР°Р·Р°Рґ"
+              aria-label="Назад"
               className="flex h-9 w-9 items-center justify-center rounded-pill bg-bg-ivory/10 active:bg-bg-ivory/20 shrink-0"
             >
               <ChevronLeft className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
             </button>
-            <DrawerTitle className="text-bg-ivory">РСЃС‚РѕСЂРёСЏ РІРёР·РёС‚РѕРІ</DrawerTitle>
+            <DrawerTitle className="text-bg-ivory">История визитов</DrawerTitle>
           </div>
           <DrawerDescription className="text-bg-ivory/60">
-            Р’СЃРµ РІР°С€Рё РїСЂРѕС€РµРґС€РёРµ Рё РѕС‚РјРµРЅС‘РЅРЅС‹Рµ Р·Р°РїРёСЃРё.
+            Все ваши прошедшие и отменённые записи.
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4 pb-6">
           {history.length === 0 ? (
             <p className="text-center text-[13px] text-bg-ivory/50 py-8">
-              РСЃС‚РѕСЂРёСЏ РїСѓСЃС‚Р°.
+              История пуста.
             </p>
           ) : (
             <div className="space-y-2 max-h-[60vh] overflow-y-auto">
